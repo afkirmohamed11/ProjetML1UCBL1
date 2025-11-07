@@ -1,0 +1,6 @@
+default:
+  random_seed: 42
+  test_size: 0.2
+  model_params:
+    n_estimators: 100
+    max_depth: null
