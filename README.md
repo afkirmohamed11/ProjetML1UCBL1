@@ -20,7 +20,7 @@ ml\Scripts\activate
 ```sh
 ml\Scripts\activate
 ```
-### Install 
+### Install dependencies
 ```sh
 pip install -r requirements.txt
 ```
