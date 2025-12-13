@@ -1,6 +1,8 @@
 -- Table schema for the Telco Customer Churn dataset
 
-CREATE TABLE customers (
+CREATE DATABASE telco_churn;
+CREATE SCHEMA public;
+CREATE TABLE public.customers (
     customer_id        TEXT PRIMARY KEY,
     gender             TEXT,
     senior_citizen     BOOLEAN,
@@ -31,5 +33,4 @@ CREATE TABLE customers (
 
 
 -- TO insert the cvs in the database, use the following command in psql:
-\copy public.customers FROM 'C:/Users/Dell/data/ref_data.csv' DELIMITER ',' CSV HEADER NULL ' '; 
-
+\copy public.customers FROM 'C:\Users\Dell\Downloads\ref_data.csv' DELIMITER ',' CSV HEADER NULL ' '; 
