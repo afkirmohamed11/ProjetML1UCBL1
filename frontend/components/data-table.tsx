@@ -407,7 +407,7 @@ export function DataTable({
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <h2 className="text-base font-medium">Table</h2>
+        <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

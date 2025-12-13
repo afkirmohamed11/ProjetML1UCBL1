@@ -39,19 +39,20 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
       title: "Customers",
-      url: "#",
+      url: "/customers",
       icon: IconUsers,
+
     },
-    // {
-    //   title: "Lifecycle",
-    //   url: "#",
-    //   icon: IconListDetails,
-    // },
+    {
+      title: "Try Churn AI",
+      url: "/model",
+      icon: IconListDetails,
+    },
     // {
     //   title: "Analytics",
     //   url: "#",
