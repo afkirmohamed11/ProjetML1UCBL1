@@ -32,5 +32,5 @@ CREATE TABLE public.customers (
 );
 
 
--- TO insert the cvs in the database, use the following command in psql:
+-- TO insert the cvs in the database, use the following command in psql (PSQL TOOL):
 \copy public.customers FROM 'C:\Users\Dell\Downloads\ref_data.csv' DELIMITER ',' CSV HEADER NULL ' '; 
