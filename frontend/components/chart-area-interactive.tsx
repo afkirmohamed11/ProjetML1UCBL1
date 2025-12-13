@@ -33,97 +33,97 @@ import {
 export const description = "An interactive area chart"
 
 const chartData = [
-  { date: "2024-04-01", desktop: 222, mobile: 150 },
-  { date: "2024-04-02", desktop: 97, mobile: 180 },
-  { date: "2024-04-03", desktop: 167, mobile: 120 },
-  { date: "2024-04-04", desktop: 242, mobile: 260 },
-  { date: "2024-04-05", desktop: 373, mobile: 290 },
-  { date: "2024-04-06", desktop: 301, mobile: 340 },
-  { date: "2024-04-07", desktop: 245, mobile: 180 },
-  { date: "2024-04-08", desktop: 409, mobile: 320 },
-  { date: "2024-04-09", desktop: 59, mobile: 110 },
-  { date: "2024-04-10", desktop: 261, mobile: 190 },
-  { date: "2024-04-11", desktop: 327, mobile: 350 },
-  { date: "2024-04-12", desktop: 292, mobile: 210 },
-  { date: "2024-04-13", desktop: 342, mobile: 380 },
-  { date: "2024-04-14", desktop: 137, mobile: 220 },
-  { date: "2024-04-15", desktop: 120, mobile: 170 },
-  { date: "2024-04-16", desktop: 138, mobile: 190 },
-  { date: "2024-04-17", desktop: 446, mobile: 360 },
-  { date: "2024-04-18", desktop: 364, mobile: 410 },
-  { date: "2024-04-19", desktop: 243, mobile: 180 },
-  { date: "2024-04-20", desktop: 89, mobile: 150 },
-  { date: "2024-04-21", desktop: 137, mobile: 200 },
-  { date: "2024-04-22", desktop: 224, mobile: 170 },
-  { date: "2024-04-23", desktop: 138, mobile: 230 },
-  { date: "2024-04-24", desktop: 387, mobile: 290 },
-  { date: "2024-04-25", desktop: 215, mobile: 250 },
-  { date: "2024-04-26", desktop: 75, mobile: 130 },
-  { date: "2024-04-27", desktop: 383, mobile: 420 },
-  { date: "2024-04-28", desktop: 122, mobile: 180 },
-  { date: "2024-04-29", desktop: 315, mobile: 240 },
-  { date: "2024-04-30", desktop: 454, mobile: 380 },
-  { date: "2024-05-01", desktop: 165, mobile: 220 },
-  { date: "2024-05-02", desktop: 293, mobile: 310 },
-  { date: "2024-05-03", desktop: 247, mobile: 190 },
-  { date: "2024-05-04", desktop: 385, mobile: 420 },
-  { date: "2024-05-05", desktop: 481, mobile: 390 },
-  { date: "2024-05-06", desktop: 498, mobile: 520 },
-  { date: "2024-05-07", desktop: 388, mobile: 300 },
-  { date: "2024-05-08", desktop: 149, mobile: 210 },
-  { date: "2024-05-09", desktop: 227, mobile: 180 },
-  { date: "2024-05-10", desktop: 293, mobile: 330 },
-  { date: "2024-05-11", desktop: 335, mobile: 270 },
-  { date: "2024-05-12", desktop: 197, mobile: 240 },
-  { date: "2024-05-13", desktop: 197, mobile: 160 },
-  { date: "2024-05-14", desktop: 448, mobile: 490 },
-  { date: "2024-05-15", desktop: 473, mobile: 380 },
-  { date: "2024-05-16", desktop: 338, mobile: 400 },
-  { date: "2024-05-17", desktop: 499, mobile: 420 },
-  { date: "2024-05-18", desktop: 315, mobile: 350 },
-  { date: "2024-05-19", desktop: 235, mobile: 180 },
-  { date: "2024-05-20", desktop: 177, mobile: 230 },
-  { date: "2024-05-21", desktop: 82, mobile: 140 },
-  { date: "2024-05-22", desktop: 81, mobile: 120 },
-  { date: "2024-05-23", desktop: 252, mobile: 290 },
-  { date: "2024-05-24", desktop: 294, mobile: 220 },
-  { date: "2024-05-25", desktop: 201, mobile: 250 },
-  { date: "2024-05-26", desktop: 213, mobile: 170 },
-  { date: "2024-05-27", desktop: 420, mobile: 460 },
-  { date: "2024-05-28", desktop: 233, mobile: 190 },
-  { date: "2024-05-29", desktop: 78, mobile: 130 },
-  { date: "2024-05-30", desktop: 340, mobile: 280 },
-  { date: "2024-05-31", desktop: 178, mobile: 230 },
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
+  { date: "2024-04-01", churn: 5 },
+  { date: "2024-04-02", churn: 8 },
+  { date: "2024-04-03", churn: 12 },
+  { date: "2024-04-04", churn: 7 },
+  { date: "2024-04-05", churn: 10 },
+  { date: "2024-04-06", churn: 15 },
+  { date: "2024-04-07", churn: 9 },
+  { date: "2024-04-08", churn: 14 },
+  { date: "2024-04-09", churn: 6 },
+  { date: "2024-04-10", churn: 11 },
+  { date: "2024-04-11", churn: 13 },
+  { date: "2024-04-12", churn: 10 },
+  { date: "2024-04-13", churn: 15 },
+  { date: "2024-04-14", churn: 8 },
+  { date: "2024-04-15", churn: 7 },
+  { date: "2024-04-16", churn: 9 },
+  { date: "2024-04-17", churn: 18 },
+  { date: "2024-04-18", churn: 15 },
+  { date: "2024-04-19", churn: 10 },
+  { date: "2024-04-20", churn: 5 },
+  { date: "2024-04-21", churn: 8 },
+  { date: "2024-04-22", churn: 14 },
+  { date: "2024-04-23", churn: 9 },
+  { date: "2024-04-24", churn: 16 },
+  { date: "2024-04-25", churn: 12 },
+  { date: "2024-04-26", churn: 6 },
+  { date: "2024-04-27", churn: 17 },
+  { date: "2024-04-28", churn: 8 },
+  { date: "2024-04-29", churn: 15 },
+  { date: "2024-04-30", churn: 20 },
+  { date: "2024-05-01", churn: 10 },
+  { date: "2024-05-02", churn: 18 },
+  { date: "2024-05-03", churn: 14 },
+  { date: "2024-05-04", churn: 20 },
+  { date: "2024-05-05", churn: 25 },
+  { date: "2024-05-06", churn: 30 },
+  { date: "2024-05-07", churn: 22 },
+  { date: "2024-05-08", churn: 10 },
+  { date: "2024-05-09", churn: 15 },
+  { date: "2024-05-10", churn: 20 },
+  { date: "2024-05-11", churn: 18 },
+  { date: "2024-05-12", churn: 12 },
+  { date: "2024-05-13", churn: 10 },
+  { date: "2024-05-14", churn: 20 },
+  { date: "2024-05-15", churn: 25 },
+  { date: "2024-05-16", churn: 18 },
+  { date: "2024-05-17", churn: 30 },
+  { date: "2024-05-18", churn: 20 },
+  { date: "2024-05-19", churn: 15 },
+  { date: "2024-05-20", churn: 10 },
+  { date: "2024-05-21", churn: 8 },
+  { date: "2024-05-22", churn: 7 },
+  { date: "2024-05-23", churn: 20 },
+  { date: "2024-05-24", churn: 18 },
+  { date: "2024-05-25", churn: 15 },
+  { date: "2024-05-26", churn: 12 },
+  { date: "2024-05-27", churn: 25 },
+  { date: "2024-05-28", churn: 15 },
+  { date: "2024-05-29", churn: 10 },
+  { date: "2024-05-30", churn: 20 },
+  { date: "2024-05-31", churn: 18 },
+  { date: "2024-06-01", churn: 12 },
+  { date: "2024-06-02", churn: 25 },
+  { date: "2024-06-03", churn: 10 },
+  { date: "2024-06-04", churn: 20 },
+  { date: "2024-06-05", churn: 8 },
+  { date: "2024-06-06", churn: 15 },
+  { date: "2024-06-07", churn: 18 },
+  { date: "2024-06-08", churn: 20 },
+  { date: "2024-06-09", churn: 25 },
+  { date: "2024-06-10", churn: 10 },
+  { date: "2024-06-11", churn: 8 },
+  { date: "2024-06-12", churn: 20 },
+  { date: "2024-06-13", churn: 7 },
+  { date: "2024-06-14", churn: 18 },
+  { date: "2024-06-15", churn: 15 },
+  { date: "2024-06-16", churn: 12 },
+  { date: "2024-06-17", churn: 25 },
+  { date: "2024-06-18", churn: 10 },
+  { date: "2024-06-19", churn: 15 },
+  { date: "2024-06-20", churn: 20 },
+  { date: "2024-06-21", churn: 8 },
+  { date: "2024-06-22", churn: 10 },
+  { date: "2024-06-23", churn: 25 },
+  { date: "2024-06-24", churn: 7 },
+  { date: "2024-06-25", churn: 8 },
+  { date: "2024-06-26", churn: 20 },
+  { date: "2024-06-27", churn: 25 },
+  { date: "2024-06-28", churn: 10 },
+  { date: "2024-06-29", churn: 8 },
+  { date: "2024-06-30", churn: 20 },
 ]
 
 const chartConfig = {
@@ -167,7 +167,7 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>Churn Over Time</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
             Total for the last 3 months
@@ -215,27 +215,15 @@ export function ChartAreaInteractive() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillChurn" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="var(--color-churn)"
                   stopOpacity={1.0}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="var(--color-churn)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -270,17 +258,10 @@ export function ChartAreaInteractive() {
               }
             />
             <Area
-              dataKey="mobile"
+              dataKey="churn"
               type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
+              fill="url(#fillChurn)"
+              stroke="var(--color-churn)"
               stackId="a"
             />
           </AreaChart>
