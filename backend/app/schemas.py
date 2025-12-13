@@ -29,4 +29,3 @@ class PredictRequest(BaseModel):
 
 class PredictResponse(BaseModel):
     churn_probability: float
-    churn: bool
