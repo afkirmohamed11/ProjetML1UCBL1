@@ -1,11 +1,12 @@
 import pandas as pd
 import psycopg2
-from psycopg2 import sql
+# from dotenv import load_dotenv
+import os
 
-def read_postgres_table(dbname, user, password, host, port, table_name):
+def read_postgres_table():
     """
     Reads a PostgreSQL table and returns it as a Pandas DataFrame.
-    
+
     Parameters:
         dbname (str): Database name
         user (str): Username
@@ -13,22 +14,29 @@ def read_postgres_table(dbname, user, password, host, port, table_name):
         host (str): Host (e.g., 'localhost')
         port (int/str): Port (e.g., 5432)
         table_name (str): Name of the table to read
-    
+
     Returns:
         pd.DataFrame: Data from the table
     """
     conn = psycopg2.connect(
-        dbname=dbname,
-        user=user,
-        password=password,
-        host=host,
-        port=port
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
     )
-    query = sql.SQL("SELECT * FROM {}").format(sql.Identifier(table_name))
+    
+    # Build query as a string safely
+    query = f'SELECT * FROM "{os.getenv("TABLE_NAME")}"' 
+    
     df = pd.read_sql_query(query, conn)
     conn.close()
     return df
 
+
 # Example usage
-# df = read_postgres_table("mydb", "myuser", "mypassword", "localhost", 5432, "mytable")
+# Load environment variables from .env file
+# load_dotenv()
+
+# df = read_postgres_table()
 # print(df.head())

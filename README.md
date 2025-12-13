@@ -13,3 +13,14 @@ python -m venv ml
 ```sh
 ml\Scripts\activate
 ```
+### Install Install dependencies
+```sh
+```
+### Activate the virtual environment
+```sh
+ml\Scripts\activate
+```
+### Install 
+```sh
+pip install -r requirements.txt
+```
