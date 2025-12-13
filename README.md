@@ -12,13 +12,7 @@ python -m venv ml
 ### Activate the virtual environment
 ```sh
 ml\Scripts\activate
-```
-### Install Install dependencies
-```sh
-```
-### Activate the virtual environment
-```sh
-ml\Scripts\activate
+
 ```
 ### Install dependencies
 ```sh
