@@ -5,15 +5,7 @@ import os
 
 def read_postgres_table():
     """
-    Reads a PostgreSQL table and returns it as a Pandas DataFrame.
-
-    Parameters:
-        dbname (str): Database name
-        user (str): Username
-        password (str): Password
-        host (str): Host (e.g., 'localhost')
-        port (int/str): Port (e.g., 5432)
-        table_name (str): Name of the table to read
+    Reads an AWS RDS PostgreSQL table and returns it as a Pandas DataFrame.
 
     Returns:
         pd.DataFrame: Data from the table
