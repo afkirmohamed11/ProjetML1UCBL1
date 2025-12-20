@@ -1,2 +1,5 @@
 __pycache__/
+/ml
+/data/ref_data.csv
 .env
+notes.txt
