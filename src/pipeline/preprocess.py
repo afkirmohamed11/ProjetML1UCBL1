@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from read_data import read_postgres_table
+from utils.data_loader import read_postgres_table
 from dotenv import load_dotenv
 load_dotenv()
 
