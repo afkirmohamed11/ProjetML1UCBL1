@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 from read_data import read_postgres_table
 from dotenv import load_dotenv
 load_dotenv()
@@ -72,6 +73,15 @@ def drop_redundant_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(columns=columns_to_drop, errors='ignore')
 
 
+def scale_numeric_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Scales high-magnitude numeric features.
+    """
+    numeric_columns = ['monthly_charges', 'total_charges']
+    scaler = StandardScaler()
+    df[numeric_columns] = scaler.fit_transform(df[numeric_columns])
+    return df
+
 
 def preprocess_data() -> pd.DataFrame:
     """
@@ -90,6 +100,7 @@ def preprocess_data() -> pd.DataFrame:
     df = encode_service_features(df)
     df = encode_categorical_features(df)
     df = drop_redundant_columns(df)
+    df = scale_numeric_features(df)
     return df
 
 
@@ -102,4 +113,5 @@ def preprocess_data() -> pd.DataFrame:
 
 # Example usage
 # df = preprocess_data()
+# print(df["total_charges"].max())
 # df.to_csv('preprocessed_customers.csv', index=False)
