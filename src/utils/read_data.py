@@ -11,11 +11,11 @@ def read_postgres_table():
         pd.DataFrame: Data from the table
     """
     conn = psycopg2.connect(
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
+        dbname=os.getenv("RDS_DB_NAME"),
+        user=os.getenv("RDS_USER"),
+        password=os.getenv("RDS_PASSWORD"),
+        host=os.getenv("RDS_HOST"),
+        port=os.getenv("RDS_PORT"),
     )
     
     # Build query as a string safely
