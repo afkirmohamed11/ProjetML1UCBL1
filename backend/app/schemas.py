@@ -1,58 +1,41 @@
 from pydantic import BaseModel
 
 class PredictRequest(BaseModel):
-    # TODO : Define the input features for the prediction request based on the model requirements
-    
-    # gender: str
-    # senior_citizen: bool
-    # partner: bool
-    # dependents: bool
-    # tenure: int
-
-    # phone_service: bool
-    # multiple_lines: str
-
-    # internet_service: str
-    # online_security: str
-    # online_backup: str
-    # device_protection: str
-    # tech_support: str
-    # streaming_tv: str
-    # streaming_movies: str
-
-    # contract: str
-    # paperless_billing: bool
-    # payment_method: str
-
-    # monthly_charges: float
-    # total_charges: float
-
-    # TODO
-    senior_citizen: int
-    partner: int
-    dependents: int
-    phone_service: int
-    multiple_lines: int
-    online_security: int
-    online_backup: int
-    device_protection: int
-    tech_support: int
-    streaming_tv: int
-    streaming_movies: int
-    paperless_billing: int
-    monthly_charges: int
-    total_charges: int
-    gender_Male: int
-    internet_service_DSL: int
-    internet_service_Fiber_optic: int
-
-    contract_One_year: int
-    contract_Two_year: int
-
-    payment_method_Electronic_check: int
-    payment_method_Mailed_check: int
-    payment_method_Bank_transfer: int
+    """
+    Docstring for PredictRequest
+    This schema defines the expected input for predicting customer churn.
+    It includes various customer attributes that will be used in the prediction model.
+    Attributes:
+        senior_citizen (bool): Indicates if the customer is a senior citizen.
+        partner (bool): Indicates if the customer has a partner.
+        dependents (bool): Indicates if the customer has dependents.
+        internet_service (str): Type of internet service (e.g., DSL, Fiber optic).
+        online_security (bool): Indicates if the customer has online security.
+        tech_support (bool): Indicates if the customer has tech support.
+        contract (str): Type of contract (e.g., One year, Two year).
+        paperless_billing (bool): Indicates if the customer has paperless billing.
+        payment_method (str): Method of payment (e.g., Electronic check, Mailed check, Bank transfer).
+        monthly_charges (float): Monthly charges for the customer (will be scaled).
+        total_charges (float): Total charges for the customer (will be scaled).
+    """    
+    senior_citizen: bool  
+    partner: bool 
+    dependents: bool  
+    internet_service: str  # internet_service_DSL, internet_service_Fiber_optic
+    online_security: bool
+    tech_support: bool
+    contract: str  # contract_One_year, contract_Two_year
+    paperless_billing: bool  
+    payment_method: str  # payment_method_Electronic_check, payment_method_Mailed_check, payment_method_Bank_transfer
+    monthly_charges: float  # will be scaled
+    total_charges: float  # will be scaled
 
 
 class PredictResponse(BaseModel):
+    """
+    Docstring for PredictResponse
+    This schema defines the output of the customer churn prediction.
+    Attributes:
+        churn_probability (float): The probability of customer churn.
+    """
     churn_probability: float
