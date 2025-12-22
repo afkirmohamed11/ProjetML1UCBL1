@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.schemas import PredictRequest, PredictResponse
 from app.predict import predict_churn
-from app.info import get_model_info
+from app.model import get_model_info
 
 app = FastAPI(title="Telco Churn Prediction API")
 
@@ -11,6 +11,7 @@ def health():
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(payload: PredictRequest):
+    """Endpoint to predict customer churn probability."""
     proba = predict_churn(payload.dict())
     return {"churn_probability": proba}
 

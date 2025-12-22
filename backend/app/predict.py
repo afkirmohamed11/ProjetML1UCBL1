@@ -1,13 +1,15 @@
-from app.model import load_model
+from app.model import load_model, process_input
 
 def predict_churn(
-        data: dict # TODO: specify the input based on schema
+        data: dict 
         ) -> float:
     model = load_model()
 
-    # TODO: use the model to make a prediction
+    processed_data = process_input(data)
     features = model.feature_names_in_
-    X = [data[name] for name in features]
+    X = [processed_data[name] for name in features]
+
+    # Make the prediction
     proba = model.predict_proba([X])[0][1]
 
     return float(proba)

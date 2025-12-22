@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Literal
 
 class PredictRequest(BaseModel):
     """
@@ -21,12 +22,12 @@ class PredictRequest(BaseModel):
     senior_citizen: bool  
     partner: bool 
     dependents: bool  
-    internet_service: str  # internet_service_DSL, internet_service_Fiber_optic
+    internet_service: Literal['DSL', 'Fiber optic']  
     online_security: bool
     tech_support: bool
-    contract: str  # contract_One_year, contract_Two_year
+    contract: Literal['One year', 'Two year'] 
     paperless_billing: bool  
-    payment_method: str  # payment_method_Electronic_check, payment_method_Mailed_check, payment_method_Bank_transfer
+    payment_method: Literal['Electronic check', 'Mailed check', 'Bank transfer']  
     monthly_charges: float  # will be scaled
     total_charges: float  # will be scaled
 
