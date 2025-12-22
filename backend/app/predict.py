@@ -6,6 +6,8 @@ def predict_churn(
     model = load_model()
 
     # TODO: use the model to make a prediction
-    proba = 0.0  
+    features = model.feature_names_in_
+    X = [data[name] for name in features]
+    proba = model.predict_proba([X])[0][1]
 
     return float(proba)
