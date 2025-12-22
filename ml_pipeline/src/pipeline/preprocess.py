@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from utils.data_loader import read_postgres_table
+from data_loader import read_postgres_table
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -82,6 +82,17 @@ def scale_numeric_features(df: pd.DataFrame) -> pd.DataFrame:
     df[numeric_columns] = scaler.fit_transform(df[numeric_columns])
     return df
 
+def drop_low_impact_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Drops features that have very low correlation with churn or provide minimal predictive value.
+    Check experiments/ML1_Model_Building.ipynb for correlation analysis.
+    """
+    low_impact_cols = [
+        "gender_Male", "phone_service", "multiple_lines",
+        "streaming_tv", "streaming_movies", "online_backup", "device_protection"
+    ]
+    return df.drop(columns=low_impact_cols, errors='ignore')
+
 
 def preprocess_data() -> pd.DataFrame:
     """
@@ -101,6 +112,7 @@ def preprocess_data() -> pd.DataFrame:
     df = encode_categorical_features(df)
     df = drop_redundant_columns(df)
     df = scale_numeric_features(df)
+    df = drop_low_impact_features(df)
     return df
 
 
