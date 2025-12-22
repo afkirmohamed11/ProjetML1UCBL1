@@ -5,4 +5,5 @@ __pycache__/
 notes.txt
 /experiments/correlations_pearson_numeric.csv
 /experiments/correlations_phi_binary.csv
-/data/preprocessed_customers.csv
+/data/preprocessed_data.csv
+/data/customers_data.csv
