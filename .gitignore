@@ -1,8 +1,2 @@
 __pycache__/
 /ml
-/data/ref_data.csv
-.env
-notes.txt
-/experiments/correlations_pearson_numeric.csv
-/experiments/correlations_phi_binary.csv
-/data/preprocessed_customers.csv
