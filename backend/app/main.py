@@ -33,7 +33,7 @@ def get_customers():
         return {"error": str(e)}
 
 @app.get("/customers/{customer_id}")
-def get_customer_by_id(customer_id: int):
+def get_customer_by_id(customer_id: str):
     """Endpoint to fetch a customer by their ID."""
     try:
         customer = fetch_customer_by_id(customer_id)
