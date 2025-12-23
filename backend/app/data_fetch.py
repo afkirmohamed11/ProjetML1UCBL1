@@ -24,3 +24,29 @@ def fetch_customers():
         if connection:
             cursor.close()
             connection.close()
+
+
+def fetch_customer_by_id(customer_id):
+    """Fetch a single customer by their ID."""
+    connection = None
+    try:
+        # Establish connection to the database
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Execute query to fetch the customer by ID
+        query = "SELECT * FROM customers WHERE id = %s;"
+        cursor.execute(query, (customer_id,))
+        customer = cursor.fetchone()
+
+        return customer
+
+    except Exception as e:
+        print(f"Error fetching customer by ID: {e}")
+        raise
+
+    finally:
+        # Close the connection
+        if connection:
+            cursor.close()
+            connection.close()
