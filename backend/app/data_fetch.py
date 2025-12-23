@@ -10,7 +10,7 @@ def fetch_customers():
         
         # Execute query to fetch customers
         print('Fetching customers from database...')
-        query = "SELECT * FROM customers limit;"
+        query = "SELECT * FROM customers;"
         cursor.execute(query)
         customers = cursor.fetchall()
 
