@@ -15,6 +15,7 @@ RDS_PASSWORD = os.getenv("RDS_PASSWORD")
 def get_db_connection():
     """Establish and return a database connection."""
     try:
+        print('Establishing database connection...')
         connection = psycopg2.connect(
             host=RDS_HOST,
             port=RDS_PORT,

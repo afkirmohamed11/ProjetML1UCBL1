@@ -7,9 +7,10 @@ def fetch_customers():
         # Establish connection to the database
         connection = get_db_connection()
         cursor = connection.cursor()
-
+        
         # Execute query to fetch customers
-        query = "SELECT * FROM customers;"
+        print('Fetching customers from database...')
+        query = "SELECT * FROM customers limit;"
         cursor.execute(query)
         customers = cursor.fetchall()
 
