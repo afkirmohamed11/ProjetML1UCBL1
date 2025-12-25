@@ -51,3 +51,46 @@ def fetch_customer_by_id(customer_id):
         if connection:
             cursor.close()
             connection.close()
+
+
+def fetch_customer_features(conn, customer_id: str) -> dict | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT email, gender, senior_citizen, partner, dependents, tenure,
+                   phone_service, multiple_lines, internet_service,
+                   online_security, online_backup, device_protection, tech_support,
+                   streaming_tv, streaming_movies, contract, paperless_billing,
+                   payment_method, monthly_charges, total_charges
+            FROM new_customers
+            WHERE customer_id = %s
+            """,
+            (customer_id,)
+        )
+        row = cur.fetchone()
+        if row is None:
+            return None
+
+        return {
+            "customer_id": customer_id,
+            "email": row[0],
+            "gender": row[1],
+            "senior_citizen": row[2],
+            "partner": row[3],
+            "dependents": row[4],
+            "tenure": row[5],
+            "phone_service": row[6],
+            "multiple_lines": row[7],
+            "internet_service": row[8],
+            "online_security": row[9],
+            "online_backup": row[10],
+            "device_protection": row[11],
+            "tech_support": row[12],
+            "streaming_tv": row[13],
+            "streaming_movies": row[14],
+            "contract": row[15],
+            "paperless_billing": row[16],
+            "payment_method": row[17],
+            "monthly_charges": float(row[18]) if row[18] is not None else None,
+            "total_charges": float(row[19]) if row[19] is not None else None,
+        }
