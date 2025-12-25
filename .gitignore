@@ -1,0 +1,12 @@
+__pycache__/
+/ml
+
+# Env files
+.env
+**/.env
+.env.*
+
+# Data (ne pas versionner)
+data/
+**/data/
+*.csv
