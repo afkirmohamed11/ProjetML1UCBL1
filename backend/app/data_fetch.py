@@ -27,7 +27,7 @@ def fetch_customers():
             connection.close()
 
 
-def fetch_customer_by_id(customer_id):
+def fetch_customer_by_id(customer_id: str):
     """Fetch a single customer by their ID."""
     connection = None
     try:
