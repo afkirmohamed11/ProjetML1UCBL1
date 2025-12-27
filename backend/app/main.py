@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from app.schemas import PredictInput, PredictResponse
+from app.schemas import PredictInput, PredictRequest, PredictResponse
 from app.predict import predict_churn
 from app.model import get_model_info
 from app.data_fetch import fetch_customers, fetch_customer_by_id, fetch_customer_features
@@ -16,9 +16,17 @@ app = FastAPI(title="Telco Churn Prediction API")
 def health():
     return {"status": "ok"}
 
+
+@app.post("/predict", response_model=PredictResponse)
+def predict_payload(payload: PredictRequest):
+    """Endpoint to predict customer churn probability."""
+    proba = predict_churn(payload.dict())
+    return {"churn_probability": proba}
+
 @app.post("/predict", response_model=PredictResponse)
 def predict(payload: "PredictInput"):
     """
+    TODO: make sure to handle two modes: best approach to separate them?
     Mode A: payload = {customer_id} -> fetch features depuis new_customers
     Mode B: payload = features complètes (incluant customer_id)
     """
