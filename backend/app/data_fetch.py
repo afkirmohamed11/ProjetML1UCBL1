@@ -36,7 +36,7 @@ def fetch_customer_by_id(customer_id):
         cursor = connection.cursor()
 
         # Execute query to fetch the customer by ID
-        query = "SELECT * FROM customers WHERE id = %s;"
+        query = "SELECT * FROM customers WHERE customer_id = %s;"
         cursor.execute(query, (customer_id,))
         customer = cursor.fetchone()
 
