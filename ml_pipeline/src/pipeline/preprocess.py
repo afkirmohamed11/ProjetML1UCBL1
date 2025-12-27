@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from utils.data_loader import read_postgres_table
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -92,38 +91,3 @@ def drop_low_impact_features(df: pd.DataFrame) -> pd.DataFrame:
         "streaming_tv", "streaming_movies", "online_backup", "device_protection"
     ]
     return df.drop(columns=low_impact_cols, errors='ignore')
-
-
-def preprocess_data() -> pd.DataFrame:
-    """
-    Preprocesses the input DataFrame.
-
-    Parameters:
-        df (pd.DataFrame): Input DataFrame to preprocess
-    Returns:
-        pd.DataFrame: Preprocessed DataFrame   
-    """
-    df = read_postgres_table()
-    df = drop_duplicates(df)
-    df = fill_total_charges_median(df)
-    df = encode_boolean_features(df)
-    df = drop_customer_id(df)
-    df = encode_service_features(df)
-    df = encode_categorical_features(df)
-    df = drop_redundant_columns(df)
-    df = scale_numeric_features(df)
-    df = drop_low_impact_features(df)
-    return df
-
-
-
-
-
-
-
-
-
-# Example usage
-# df = preprocess_data()
-# print(df["total_charges"].max())
-# df.to_csv('preprocessed_customers.csv', index=False)
