@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
 from app.schemas import PredictInput, PredictRequest, PredictResponse
 from app.predict import predict_churn
 from app.model import get_model_info
@@ -11,6 +12,14 @@ import json
 
 
 app = FastAPI(title="Telco Churn Prediction API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/health")
 def health():
