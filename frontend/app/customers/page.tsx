@@ -8,7 +8,7 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 
-import data from "../../data/data.json"
+import data from "../../data/customers_churn.json"
 
 export default function Page() {
   return (
