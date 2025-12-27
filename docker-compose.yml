@@ -13,22 +13,32 @@ services:
     networks:
       - prod_net
 
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: n8n
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
     ports:
-      - "5678:5678"
-    volumes:
-      - n8n_data:/home/node/.n8n
-    environment:
-      - TZ=Europe/Paris
-      # Pour que les liens des webhooks soient corrects (tests en local)
-      - N8N_PUBLIC_BASE_URL=http://localhost:5678
-      - WEBHOOK_URL=http://localhost:5678
-      # Recommandé (sinon n8n peut warning)
-      - N8N_ENCRYPTION_KEY=change_this_key_please
+      - "3000:3000"
     networks:
       - prod_net
+
+  # n8n:
+  #   image: n8nio/n8n:latest
+  #   container_name: n8n
+  #   ports:
+  #     - "5678:5678"
+  #   volumes:
+  #     - n8n_data:/home/node/.n8n
+  #   environment:
+  #     - TZ=Europe/Paris
+  #     # Pour que les liens des webhooks soient corrects (tests en local)
+  #     - N8N_PUBLIC_BASE_URL=http://localhost:5678
+  #     - WEBHOOK_URL=http://localhost:5678
+  #     # Recommandé (sinon n8n peut warning)
+  #     - N8N_ENCRYPTION_KEY=change_this_key_please
+  #   networks:
+  #     - prod_net
 
 networks:
   prod_net:
