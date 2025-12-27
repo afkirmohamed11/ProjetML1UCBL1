@@ -1,0 +1,13 @@
+# Ignore local files not needed in the Docker image
+node_modules
+.next
+.git
+.gitignore
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+.env
+.env.*
+.vscode
+coverage
+**/*.log

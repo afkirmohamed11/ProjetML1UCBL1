@@ -10,7 +10,7 @@ def fetch_customers():
         
         # Execute query to fetch customers
         print('Fetching customers from database...')
-        query = "SELECT * FROM customers;"
+        query = "SELECT * FROM customers limit 10;"
         cursor.execute(query)
         customers = cursor.fetchall()
 
@@ -27,7 +27,7 @@ def fetch_customers():
             connection.close()
 
 
-def fetch_customer_by_id(customer_id):
+def fetch_customer_by_id(customer_id: str):
     """Fetch a single customer by their ID."""
     connection = None
     try:
@@ -36,7 +36,7 @@ def fetch_customer_by_id(customer_id):
         cursor = connection.cursor()
 
         # Execute query to fetch the customer by ID
-        query = "SELECT * FROM customers WHERE id = %s;"
+        query = "SELECT * FROM customers WHERE customer_id = %s;"
         cursor.execute(query, (customer_id,))
         customer = cursor.fetchone()
 
