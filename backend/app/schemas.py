@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Literal, Optional, Union
+from uuid import UUID
+
 
 class PredictRequest(BaseModel):
     """
@@ -19,6 +21,7 @@ class PredictRequest(BaseModel):
         monthly_charges (float): Monthly charges for the customer (will be scaled).
         total_charges (float): Total charges for the customer (will be scaled).
     """    
+    customer_id: str
     senior_citizen: bool  
     partner: bool 
     dependents: bool  
@@ -31,6 +34,11 @@ class PredictRequest(BaseModel):
     monthly_charges: float  # will be scaled
     total_charges: float  # will be scaled
 
+class PredictByIdRequest(BaseModel):
+    # Mode 1: API fetch customer infos by ID depuis table new_customers)
+    customer_id: str
+
+PredictInput = Union[PredictByIdRequest, PredictRequest]
 
 class PredictResponse(BaseModel):
     """
@@ -39,4 +47,22 @@ class PredictResponse(BaseModel):
     Attributes:
         churn_probability (float): The probability of customer churn.
     """
+    prediction_id: int
+    token: UUID
+    customer_id: str
     churn_probability: float
+    prediction: int  # 0/1
+
+class FeedbackRequest(BaseModel):
+    token: UUID
+    answer: Literal["YES", "NO"]
+    feedback_label: Literal[0, 1]
+    source: str = Field(default="email")
+
+class FeedbackResponse(BaseModel):
+    status: str
+    feedback_count: int
+    retrain_triggered: bool
+
+class RetrainRequest(BaseModel):
+    reason: Literal["feedback", "drift"]
