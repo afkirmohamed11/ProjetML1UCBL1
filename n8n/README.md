@@ -139,7 +139,62 @@ Configuration :
 
 ---
 
-## 6) À propos des warnings “env access denied”
+## 6) Exemple – Déclencher le webhook `notify-churn`
+
+### 1) Payload JSON attendu
+
+```json
+{
+  "token": "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11",
+  "customer_id": "7590-VHVEG",
+  "churn_probability": 0.81,
+  "prediction": 1
+}
+```
+
+> `prediction`: 1 = churn, 0 = non churn (à adapter selon ton workflow).
+
+### 2) Test en PowerShell (Windows)
+
+```powershell
+$body = @{
+  token = "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11"
+  customer_id = "7590-VHVEG"
+  churn_probability = 0.81
+  prediction = 1
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://localhost:5678/webhook-test/notify-churn" `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+### 3) Test en curl (Linux / macOS / Git Bash)
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/notify-churn" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11",
+    "customer_id": "7590-VHVEG",
+    "churn_probability": 0.81,
+    "prediction": 1
+  }'
+```
+## Nettoyage – Supprimer un feedback de test (PostgreSQL)
+
+Si tu relances plusieurs fois le **même test** (même `prediction_id`), tu risques de te heurter à un doublon (selon les contraintes de ta table).  
+Tu peux supprimer l’entrée de test déjà enregistrée avec la requête suivante :
+
+```sql
+DELETE FROM public.feedback
+WHERE prediction_id = 2;
+```
+---
+
+## 7) À propos des warnings “env access denied”
 
 Il est **normal** de voir des champs en rouge avec :
 
@@ -151,7 +206,7 @@ Il est **normal** de voir des champs en rouge avec :
 
 ---
 
-## 7) Redémarrer / arrêter n8n
+## 8) Redémarrer / arrêter n8n
 
 ```bash
 docker compose stop n8n
@@ -160,7 +215,7 @@ docker compose start n8n
 
 ---
 
-## 8) Reset complet n8n (supprime tout)
+## 9) Reset complet n8n (supprime tout)
 
 Supprime workflows + credentials + compte :
 
