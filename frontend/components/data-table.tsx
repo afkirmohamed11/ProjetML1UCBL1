@@ -105,6 +105,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { BellIcon } from "lucide-react"
 
 export const schema = z.object({
   id: z.number(),
@@ -431,6 +432,10 @@ export function DataTable({
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => alert('Customers have been notified!')}>
+                <BellIcon className="h-5 w-5 mr-2" />
+                Notify Customers
+              </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
