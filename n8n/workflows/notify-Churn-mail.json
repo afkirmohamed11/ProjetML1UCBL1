@@ -1,0 +1,251 @@
+{
+  "name": "notify-Churn-mail",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "notify-churn",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        -80
+      ],
+      "id": "067e5b88-c2e9-4233-af79-bdecafac6b49",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  email,\n  gender,\n  senior_citizen,\n  partner,\n  dependents,\n  tenure,\n  contract,\n  internet_service,\n  monthly_charges\nFROM new_customers\nWHERE customer_id = '{{$node[\"Webhook\"].json[\"body\"][\"customer_id\"]}}';\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -304,
+        -80
+      ],
+      "id": "ae83a313-ae8a-4014-898b-0f0ed6501a24",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7990d596-4761-4aec-923a-9718094149d4",
+              "name": "token",
+              "value": "={{$node[\"Webhook\"].json.body.token}}",
+              "type": "string"
+            },
+            {
+              "id": "42c380c2-aad3-4139-ab75-8b78e6283630",
+              "name": "customer_id",
+              "value": "={{$node[\"Webhook\"].json[\"body\"][\"customer_id\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "d12286ed-834e-4130-9eb0-d666718b1d29",
+              "name": "churn_probability",
+              "value": "={{$node[\"Webhook\"].json[\"body\"][\"churn_probability\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "5daa8b53-f5a5-47b3-a5e9-f7798c23e6e7",
+              "name": "prediction",
+              "value": "={{$node[\"Webhook\"].json[\"body\"][\"prediction\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "6ff90a5a-70ce-4c8c-b29b-ff6f3384876e",
+              "name": "email",
+              "value": "={{$node[\"Execute a SQL query\"].json[\"email\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "c4c67789-649e-4023-bc5a-858e5ad415f4",
+              "name": "llm_context",
+              "value": "={{\"Client \" + $node[\"Webhook\"].json[\"body\"][\"customer_id\"] +\", tenure=\" + $node[\"Execute a SQL query\"].json[\"tenure\"] +\", contrat=\" + $node[\"Execute a SQL query\"].json[\"contract\"] +\", internet=\" + $node[\"Execute a SQL query\"].json[\"internet_service\"] +\", charges=\" + $node[\"Execute a SQL query\"].json[\"monthly_charges\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "0ad9be76-15d1-434b-b183-9725de99bd82",
+      "name": "Prepare LLM"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Tu es un conseiller relation client dans le secteur des télécommunications.\n\nRédige un email professionnel, clair et naturel, destiné à un client,\nafin de confirmer que son abonnement actuel répond bien à ses besoins.\n\nTu dois utiliser les informations suivantes pour personnaliser le message,\nsans jamais évoquer explicitement une résiliation ou un départ.\n\nContexte client :\n{{$node[\"Prepare LLM\"].json[\"llm_context\"]}}\n\nConsignes de rédaction :\n- Le ton doit être courtois, professionnel et rassurant.\n- Mentionner subtilement que certains éléments de l’abonnement\n  (ancienneté, type de contrat, facturation) justifient cette prise de contact.\n- Expliquer que cette démarche vise à s’assurer que l’offre est toujours adaptée\n  et à proposer un accompagnement si nécessaire.\n- Indiquer clairement que le client est invité à choisir\n  parmi les options présentées ci-dessous pour nous répondre.\n- Ne pas lister ou écrire les options textuellement.\n- Ne jamais utiliser les mots \"churn\", \"résiliation\" ou \"départ\".\n- Ne pas mentionner l’IA ou un modèle.\n- Longueur : 8 à 12 lignes maximum.\n- Terminer impérativement par la phrase exacte :\n  \"Merci de répondre via les boutons ci-dessous.\"\n\nLe résultat attendu est uniquement le contenu de l’email,\nsans titre, sans signature, sans explication.\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "61ca40f2-4ed9-4499-9445-39f8617cb94d",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "600bde56-8df3-400d-9d5a-4998a25e4ae2",
+              "name": "ok_url",
+              "value": "={{\"http://localhost:5678/webhook/feedback?answer=OK&token=\" + $node[\"Prepare LLM\"].json[\"token\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "cc944adf-889b-46e3-8b3e-6ee621b59577",
+              "name": "contact_url",
+              "value": "={{\"http://localhost:5678/webhook/feedback?answer=CONTACT&token=\" + $node[\"Prepare LLM\"].json[\"token\"]}}\n",
+              "type": "string"
+            },
+            {
+              "id": "b39f7b2a-d0ae-4b1a-bba1-4b0daa5abf50",
+              "name": "email_text",
+              "value": "={{$node[\"Message a model\"].json.output[0].content[0].text}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "84274059-4cb4-4c8a-920d-2b13e0119501",
+      "name": "Build Links"
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@telecom-Grp3.test",
+        "toEmail": "=={{$node[\"Prepare LLM\"].json[\"email\"]}}",
+        "subject": "Confirmation concernant votre abonnement",
+        "html": "=<p>{{$node[\"Build Links\"].json.email_text}}\n</p>\n\n<p><b>Merci de choisir une option :</b></p>\n\n<p>\n  <a href=\"{{ $node[\"Build Links\"].json[\"ok_url\"] }}\">\n    ✅ Tout est OK, je garde mon abonnement\n  </a>\n</p>\n\n<p>\n  <a href=\"{{ $node[\"Build Links\"].json[\"contact_url\"] }}\">\n    📞 Je souhaite être contacté\n  </a>\n</p>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        496,
+        -80
+      ],
+      "id": "7722543d-c5bc-4e3e-aade-9014ad277680",
+      "name": "Send email",
+      "credentials": {
+        "smtp": {
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Prepare LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare LLM": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Build Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Links": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "e7509fe7-9511-42aa-bb50-3efb3f8baea9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5a9538f8ffbe852327a948556459e21d13ebd2575901573862ea86b50efdaa5a"
+  },
+  "tags": []
+} 

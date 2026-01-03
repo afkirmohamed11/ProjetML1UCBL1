@@ -1,0 +1,123 @@
+{
+  "name": "register-feedback",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "feedback",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "665c74af-d03f-4bb1-bce5-fce5d42ecb81",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://serving-api:8080/feedback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"token\": \"{{$json.token}}\",\n  \"answer\": \"{{$json.answer}}\",\n  \"feedback_label\": {{$json.feedback_label}},\n  \"source\": \"{{$json.source}}\"\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "34998053-74ad-478d-adc5-ce1fd96d2bc0",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"token\": \"{{$json.query.token}}\",\n  \"answer\": \"{{ String($json.query.answer ?? '').replace(/=/g,'').trim().toUpperCase() === 'OK' ? 'YES' : 'NO' }}\",\n  \"feedback_label\": {{ String($json.query.answer ?? '').replace(/=/g,'').trim().toUpperCase() === 'OK' ? 0 : 1 }},\n  \"source\": \"n8n\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fc1a5ab9-0cdf-434a-8742-cf6c95ed5107",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!doctype html>\n<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <title>Merci</title>\n  </head>\n  <body style=\"font-family: Arial; padding: 24px;\">\n    <h2>Merci ✅</h2>\n    <p>Votre réponse a été enregistrée.</p>\n    <p>Vous pouvez fermer cette page.</p>\n  </body>\n</html>\n",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "c55398b0-636c-4c5f-9fe5-f3f23d7b33e5",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "7646535e-c135-47d9-a7a2-7d139fa52b35",
+  "meta": {
+    "instanceId": "5a9538f8ffbe852327a948556459e21d13ebd2575901573862ea86b50efdaa5a"
+  },
+  "tags": []
+}

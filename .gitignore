@@ -10,3 +10,7 @@ __pycache__/
 data/
 **/data/
 *.csv
+
+!.env.example
+!.env.n8n.example
+!.env.*.example

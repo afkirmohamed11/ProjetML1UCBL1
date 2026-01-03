@@ -26,7 +26,7 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/predict", response_model=PredictResponse)
+@app.post("/predictpyload", response_model=PredictResponse)
 def predict_payload(payload: PredictRequest):
     """Endpoint to predict customer churn probability."""
     proba = predict_churn(payload.dict())
@@ -54,7 +54,7 @@ def predict(payload: "PredictInput"):
             conn.close()
 
         if features is None:
-            raise HTTPException(status_code=404, detail="customer_id not found in new_customers")
+            raise HTTPException(status_code=404, detail="customer_id not found in new_customers") #TODO new_customers or customers??
 
     else:
         # Mode features : on s'attend à customer_id + toutes les features nécessaires
@@ -65,7 +65,7 @@ def predict(payload: "PredictInput"):
 
     # prédiction
     proba = predict_churn(features)
-    pred = 1 if proba >= 0.5 else 0
+    pred = 1 if proba >= 0.5 else 0 # TODO threshold configurable?
 
     # insert predictions (BIGSERIAL prediction_id) + token
     conn = None
