@@ -107,6 +107,9 @@ import {
 } from "@/components/ui/tabs"
 import { BellIcon } from "lucide-react"
 
+import { useRouter } from "next/navigation"
+
+
 export const schema = z.object({
   id: z.number(),
   // Support both legacy (header/type/…) and new (customer/contract/…) shapes
@@ -143,6 +146,11 @@ function DragHandle({ id }: { id: number }) {
 }
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
     {
     id: "select",
     header: ({ table }) => (
@@ -168,29 +176,31 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "id",
     header: "Customer ID",
-    cell: ({ row }) => row.original.id,
+    cell: ({ row }) => {
+      const router = useRouter();
+
+      const handleClick = () => {
+        router.push(`/customers/${row.original.id}`);
+      };
+
+      return (
+        <Button variant="link" onClick={handleClick}>
+          {row.original.id}
+        </Button>
+      );
+    },
     enableHiding: false,
   },
   {
     accessorKey: "gender",
     header: "Gender",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.gender ?? "-"}
-      </Badge>
-    ),
+    cell: ({ row }) => row.original.gender,
     enableHiding: false,
   },
   {
     accessorKey: "contract",
     header: "Contract",
-    cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.contract ?? "-"}
-        </Badge>
-      </div>
-    ),
+    cell: ({ row }) => (row.original.contract ?? "-"),
     enableHiding: false,
   },
   {
@@ -211,6 +221,50 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "totalCharges",
     header: "Total Charges",
     cell: ({ row }) => `$${row.original.totalCharges?.toFixed(2) ?? "-"}`,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "notified",
+    header: "Notified",
+    cell: ({ row }) => (row.original.notified ? "Yes" : "No"),
+    enableHiding: false,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+      let badgeVariant = "outline";
+      let badgeText = status;
+
+      switch (status) {
+        case "notified":
+          badgeVariant = "success";
+          badgeText = "Notified";
+          break;
+        case "not_notified":
+          badgeVariant = "destructive";
+          badgeText = "Not Notified";
+          break;
+        case "responded_ok":
+          badgeVariant = "success";
+          badgeText = "Responded OK";
+          break;
+        case "responded_no":
+          badgeVariant = "warning";
+          badgeText = "Responded No";
+          break;
+        default:
+          badgeVariant = "outline";
+          badgeText = "Unknown";
+      }
+
+      return (
+        <Badge variant={badgeVariant} className="text-muted-foreground px-1.5">
+          {badgeText}
+        </Badge>
+      );
+    },
     enableHiding: false,
   },
   {

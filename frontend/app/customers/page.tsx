@@ -16,7 +16,7 @@ export default async function Page() {
 
 
   const rawCustomers = await res.json();
-  console.log("Fetched customers:", rawCustomers);
+  // console.log("Fetched customers:", rawCustomers);
 
 
   const customers = Array.isArray(rawCustomers.customers)
@@ -41,7 +41,9 @@ export default async function Page() {
         paymentMethod: customer[17],
         monthlyCharges: customer[18],
         totalCharges: customer[19],
-        churn: customer[20],
+        status: customer[20],
+        notified: customer[21],
+        churn: customer[22],
       }))
     : [];
 
