@@ -12,6 +12,7 @@ def load_model():
 
 def get_model_info() -> dict:
     model = load_model()
+    model = model.named_steps['model']
     info = {
         "model_type": type(model).__name__,
         "feature_names": model.feature_names_in_.tolist() if hasattr(model, 'feature_names_in_') else [],

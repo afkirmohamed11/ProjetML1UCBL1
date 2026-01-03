@@ -9,6 +9,14 @@ from app.db_connection import get_db_connection
 from psycopg2.errors import UniqueViolation
 from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest
 import json
+import sys
+from pathlib import Path
+
+# Dynamically add the ml_pipeline/src/pipeline/ directory to the Python path
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ML_PIPELINE_SRC = BASE_DIR / "ml_pipeline" / "src" / "pipeline"
+if ML_PIPELINE_SRC not in sys.path:
+    sys.path.append(str(ML_PIPELINE_SRC))
 
 
 app = FastAPI(title="Telco Churn Prediction API")
@@ -54,7 +62,7 @@ def predict(payload: "PredictInput"):
             conn.close()
 
         if features is None:
-            raise HTTPException(status_code=404, detail="customer_id not found in new_customers") #TODO new_customers or customers??
+            raise HTTPException(status_code=404, detail="customer_id not found in customers") #TODO new_customers or customers??
 
     else:
         # Mode features : on s'attend à customer_id + toutes les features nécessaires
@@ -63,7 +71,11 @@ def predict(payload: "PredictInput"):
         if not customer_id:
             raise HTTPException(status_code=400, detail="customer_id is required in features mode")
 
+    
     # prédiction
+    # model_features = get_model_info()["feature_names"]
+    # features = {k: features[k] for k in model_features if k in features}
+    print(features)
     proba = predict_churn(features)
     pred = 1 if proba >= 0.5 else 0 # TODO threshold configurable?
 
