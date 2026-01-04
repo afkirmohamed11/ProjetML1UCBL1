@@ -21,6 +21,12 @@ export type PredictRecord = {
   payment_method: string;
   monthly_charges: number;
   total_charges: number;
+  churned: boolean;
+  status: string;
+  notified: boolean;
+  first_name: string;
+  last_name: string;
+  email: string;
   churn_probability: number;
 };
 
@@ -69,6 +75,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function TableCellViewer({ data }: { data: PredictRecord }) {
+  console.log("Rendering TableCellViewer with data:", data);
   const percent = (() => {
     const v = Number(data.churn_probability);
     const p = v <= 1 ? v * 100 : v;
@@ -90,6 +97,25 @@ export default function TableCellViewer({ data }: { data: PredictRecord }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        <Section title="Customer Info">
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Field label="First Name">
+              <ValueCell value={data.first_name} type="text" />
+            </Field>
+            <Field label="Last Name">
+              <ValueCell value={data.last_name} type="text" />
+            </Field>
+            <Field label="Senior Citizen">
+              <ValueCell value={data.senior_citizen} type="boolean" />
+            </Field>
+            <Field label="Partner">
+              <ValueCell value={data.partner} type="boolean" />
+            </Field>
+            <Field label="Gender">
+              <ValueCell value={data.gender} type="text" />
+            </Field>
+          </dl>
+        </Section>
         <Section title="Profile">
           <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Field label="Gender">
@@ -110,7 +136,7 @@ export default function TableCellViewer({ data }: { data: PredictRecord }) {
           </dl>
         </Section>
 
-        <Section title="Phone">
+        <Section title="Contact">
           <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Field label="Phone Service">
               <ValueCell value={data.phone_service} type="boolean" />
