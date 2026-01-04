@@ -41,9 +41,13 @@ export default async function Page() {
         paymentMethod: customer[17],
         monthlyCharges: customer[18],
         totalCharges: customer[19],
-        status: customer[20],
-        notified: customer[21],
-        churn: customer[22],
+        churn: customer[20],
+        status: customer[21],
+        notified: customer[22],
+        updated_at: customer[23],
+        first_name: customer[24],
+        last_name: customer[25],
+        email: customer[26],
       }))
     : [];
 
