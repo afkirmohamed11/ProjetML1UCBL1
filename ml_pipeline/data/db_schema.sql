@@ -28,9 +28,15 @@ CREATE TABLE public.customers (
     monthly_charges     NUMERIC(10,2),
     total_charges       NUMERIC(10,2),
 
-    churn               BOOLEAN
+    churn               BOOLEAN,
+    status              VARCHAR(20),
+    notified_date       BOOLEAN,
+    updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    
+    first_name          VARCHAR(50),
+    last_name           VARCHAR(50),
+    email               VARCHAR(100)
 );
 
-
+-- This wouldn't work because we added other columns on the reference csv file !!!
 -- TO insert the cvs in the database, use the following command in psql (PSQL TOOL):
 \copy public.customers FROM 'C:\Users\Dell\Downloads\ref_data.csv' DELIMITER ',' CSV HEADER NULL ' '; 
