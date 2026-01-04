@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from dotenv import load_dotenv
-load_dotenv()
+
 
 # drop duplicates function
 def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:

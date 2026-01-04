@@ -4,7 +4,7 @@ class DataLoader:
     def __init__(self):
         self.preprocessor =  ModelLoader.load_model().named_steps['preprocess']
         self.customer_ref =  pd.read_csv("customer_ref.csv") 
-        self.customer_prod =  pd.read_csv("customer_prod.csv") 
+        self.customer_prod =  pd.read_csv("customer_drift.csv") 
 
     def load_data(self):
         # Stocker les données avec le preprocessor
