@@ -91,3 +91,10 @@ def drop_low_impact_features(df: pd.DataFrame) -> pd.DataFrame:
         "streaming_tv", "streaming_movies", "online_backup", "device_protection"
     ]
     return df.drop(columns=low_impact_cols, errors='ignore')
+
+def remove_newly_added_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Drops newly added columns that are not relevant for model training.
+    """
+    new_columns = ['first_name', 'last_name', 'email', 'status', 'notified', 'updated_at']
+    return df.drop(columns=new_columns, errors='ignore')

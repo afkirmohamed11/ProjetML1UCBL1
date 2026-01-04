@@ -13,6 +13,7 @@ from preprocess import (
     encode_categorical_features,
     drop_redundant_columns,
     drop_low_impact_features,
+    remove_newly_added_columns
 )
 
 class PreprocessingTransformer(BaseEstimator, TransformerMixin):
@@ -39,6 +40,7 @@ class PreprocessingTransformer(BaseEstimator, TransformerMixin):
         df = encode_categorical_features(df)
         df = drop_redundant_columns(df)
         df = drop_low_impact_features(df)
+        df = remove_newly_added_columns(df)
         return df
 
 

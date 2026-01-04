@@ -29,29 +29,12 @@ def build_test_dataframe():
             "monthly_charges": 89.50,
             "total_charges": 1023.75,
             "churn": False,   # optional for predict
-        },
-        {
-            "customer_id": "0002-B",
-            "gender": "Female",
-            "senior_citizen": True,
-            "partner": False,
-            "dependents": False,
-            "tenure": 2,
-            "phone_service": True,
-            "multiple_lines": "No",
-            "internet_service": "DSL",
-            "online_security": "No",
-            "online_backup": "No",
-            "device_protection": "No",
-            "tech_support": "No",
-            "streaming_tv": "No",
-            "streaming_movies": "No",
-            "contract": "Month-to-month",
-            "paperless_billing": False,
-            "payment_method": "Mailed check",
-            "monthly_charges": 55.10,
-            "total_charges": None,  # test median imputation
-            "churn": True,
+            "status": "responded_ok",
+            "notified": True,
+            "updated_at": "2024-01-15 10:00:00",
+            "first_name": "Mariam",
+            "last_name": "Al-Hussein",
+            "email": "mariam.al-hussein@outlook.com"
         }
     ])
 
