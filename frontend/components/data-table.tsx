@@ -105,7 +105,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { BellIcon } from "lucide-react"
+import { BellIcon, PlusIcon } from "lucide-react"
+
+import { useRouter } from "next/navigation"
+
 
 export const schema = z.object({
   id: z.number(),
@@ -146,9 +149,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.customer_id} />, // Updated to use customer_id
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
   },
-  {
+    {
     id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
@@ -171,166 +174,116 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "customer",
-    header: "Customer",
+    accessorKey: "id",
+    header: "Customer ID",
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original.id ?? "-"} />
+      const router = useRouter();
+
+      const handleClick = () => {
+        router.push(`/customers/${row.original.id}`);
+      };
+
+      return (
+        <Button variant="link" onClick={handleClick}>
+          {row.original.id}
+        </Button>
+      );
     },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "contract",
-    header: "Contract",
-    cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.contract ?? "-"}
-        </Badge>
-      </div>
-    ),
-    enableHiding: false,
-  },
-  {
-    accessorKey: "payment_method",
-    header: "Payment Method",
-    cell: ({ row }) => (
-      <div className="w-40 truncate">{row.original.payment_method ?? "-"}</div>
-    ),
     enableHiding: false,
   },
   {
     accessorKey: "gender",
     header: "Gender",
+    cell: ({ row }) => row.original.gender,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "contract",
+    header: "Contract",
+    cell: ({ row }) => (row.original.contract ?? "-"),
+    enableHiding: false,
+  },
+  {
+    accessorKey: "paymentMethod",
+    header: "Payment Method",
     cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.gender ?? row.original.type ?? "-"}
-        </Badge>
-      </div>
+      <div className="w-40 truncate">{row.original.paymentMethod ?? "-"}</div>
     ),
+    enableHiding: false,
+  },
+  {
+    accessorKey: "monthlyCharges",
+    header: "Monthly Charges",
+    cell: ({ row }) => `$${row.original.monthlyCharges?.toFixed(2) ?? "-"}`,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "totalCharges",
+    header: "Total Charges",
+    cell: ({ row }) => `$${row.original.totalCharges?.toFixed(2) ?? "-"}`,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "notified",
+    header: "Notified",
+    cell: ({ row }) => (row.original.notified ? "Yes" : "No"),
+    enableHiding: false,
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Done" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconLoader />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status;
+      let badgeVariant = "outline";
+      let badgeText = status;
+
+      switch (status) {
+        case "notified":
+          badgeVariant = "success";
+          badgeText = "Notified";
+          break;
+        case "not_notified":
+          badgeVariant = "destructive";
+          badgeText = "Not Notified";
+          break;
+        case "responded_ok":
+          badgeVariant = "success";
+          badgeText = "Responded OK";
+          break;
+        case "responded_no":
+          badgeVariant = "warning";
+          badgeText = "Responded No";
+          break;
+        default:
+          badgeVariant = "outline";
+          badgeText = "Unknown";
+      }
+
+      return (
+        <Badge variant={badgeVariant} className="text-muted-foreground px-1.5">
+          {badgeText}
+        </Badge>
+      );
+    },
+    enableHiding: false,
   },
-  // {
-  //   accessorKey: "target",
-  //   header: () => <div className="w-full text-right">Target</div>,
-  //   cell: ({ row }) => (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault()
-  //         toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-  //           loading: `Saving ${row.original.header}`,
-  //           success: "Done",
-  //           error: "Error",
-  //         })
-  //       }}
-  //     >
-  //       <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-  //         Target
-  //       </Label>
-  //       <Input
-  //         className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-  //         defaultValue={row.original.target}
-  //         id={`${row.original.id}-target`}
-  //       />
-  //     </form>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "limit",
-  //   header: () => <div className="w-full text-right">Limit</div>,
-  //   cell: ({ row }) => (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault()
-  //         toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-  //           loading: `Saving ${row.original.header}`,
-  //           success: "Done",
-  //           error: "Error",
-  //         })
-  //       }}
-  //     >
-  //       <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-  //         Limit
-  //       </Label>
-  //       <Input
-  //         className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-  //         defaultValue={row.original.limit}
-  //         id={`${row.original.id}-limit`}
-  //       />
-  //     </form>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "reviewer",
-  //   header: "Reviewer",
-  //   cell: ({ row }) => {
-  //     const isAssigned = row.original.reviewer !== "Assign reviewer"
-
-  //     if (isAssigned) {
-  //       return row.original.reviewer
-  //     }
-
-  //     return (
-  //       <>
-  //         <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-  //           Reviewer
-  //         </Label>
-  //         <Select>
-  //           <SelectTrigger
-  //             className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-  //             size="sm"
-  //             id={`${row.original.id}-reviewer`}
-  //           >
-  //             <SelectValue placeholder="Assign reviewer" />
-  //           </SelectTrigger>
-  //           <SelectContent align="end">
-  //             <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-  //             <SelectItem value="Jamik Tashpulatov">
-  //               Jamik Tashpulatov
-  //             </SelectItem>
-  //           </SelectContent>
-  //         </Select>
-  //       </>
-  //     )
-  //   },
-  // },
   {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          {/* <DropdownMenuItem>Edit</DropdownMenuItem> */}
-          {/* <DropdownMenuItem>Make a copy</DropdownMenuItem> */}
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuItem>Predict</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    accessorKey: "churn",
+    header: "Churn",
+    cell: ({ row }) => (
+      <Badge
+        variant="outline"
+        className={
+          row.original.churn
+            ? "bg-red-50 text-red-600 border-red-200"
+            : "text-muted-foreground"
+        }
+      >
+        {row.original.churn ? "Yes" : "No"}
+      </Badge>
+
     ),
+    enableHiding: false,
   },
 ]
 
@@ -360,11 +313,13 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 }
 
 export function DataTable({
-  data: initialData,
+  data: initialData = [], // Provide a default empty array
 }: {
-  data: z.infer<typeof schema>[]
+  data?: z.infer<typeof schema>[] // Make the data prop optional
 }) {
   const [data, setData] = React.useState(() => initialData)
+  const [isUploading, setIsUploading] = React.useState(false)
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -424,6 +379,38 @@ export function DataTable({
     }
   }
 
+  async function handleCsvUpload(file: File) {
+    setIsUploading(true)
+    try {
+      const form = new FormData()
+      form.append("file", file)
+
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+      const res = await fetch(`${baseUrl}/customers/upload_csv`, {
+        method: "POST",
+        body: form,
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      const processed = json?.processed ?? 0
+      const errors = json?.errors?.length ?? 0
+      const generated = json?.generated_ids?.length ?? 0
+      toast.success(
+        `Uploaded ${processed} customers${generated ? `, ${generated} IDs generated` : ""}${errors ? `, ${errors} errors` : ""}`
+      )
+    } catch (err: any) {
+      toast.error(`Upload failed: ${err?.message || String(err)}`)
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   return (
     <Tabs
       defaultValue="outline"
@@ -432,43 +419,33 @@ export function DataTable({
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) handleCsvUpload(file)
+            }}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <IconLoader className="h-5 w-5 mr-2 animate-spin" />
+            ) : (
+              <PlusIcon className="h-5 w-5 mr-2" />
+            )}
+            New Customers
+          </Button>
           <Button variant="outline" size="sm" onClick={() => alert('Customers have been notified!')}>
                 <BellIcon className="h-5 w-5 mr-2" />
                 Notify Customers
-              </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          </Button>
         </div>
       </div>
       <TabsContent

@@ -21,7 +21,9 @@
     "monthly_charges": 70.35,
     "total_charges": 1688.2,
     "churn": false,
-    "churn_probability": 0.37
+    "churn_probability": 0.87,
+    "status": "respondedok",
+    "notified": true
   },
   {
     "customer_id": "2",
@@ -45,7 +47,9 @@
     "monthly_charges": 55.9,
     "total_charges": 335.4,
     "churn": false,
-    "churn_probability": 0.18
+    "churn_probability": 0.18,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "3",
@@ -69,7 +73,9 @@
     "monthly_charges": 49.25,
     "total_charges": 585.0,
     "churn": true,
-    "churn_probability": 0.52
+    "churn_probability": 0.52,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "4",
@@ -93,7 +99,9 @@
     "monthly_charges": 89.75,
     "total_charges": 3958.6,
     "churn": false,
-    "churn_probability": 0.08
+    "churn_probability": 0.08,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "5",
@@ -117,7 +125,9 @@
     "monthly_charges": 99.6,
     "total_charges": 199.2,
     "churn": true,
-    "churn_probability": 0.74
+    "churn_probability": 0.74,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "6",
@@ -141,7 +151,9 @@
     "monthly_charges": 62.4,
     "total_charges": 1872.0,
     "churn": false,
-    "churn_probability": 0.22
+    "churn_probability": 0.22,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "7",
@@ -165,7 +177,9 @@
     "monthly_charges": 79.1,
     "total_charges": 395.5,
     "churn": true,
-    "churn_probability": 0.6
+    "churn_probability": 0.6,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "8",
@@ -189,7 +203,9 @@
     "monthly_charges": 58.3,
     "total_charges": 4197.6,
     "churn": false,
-    "churn_probability": 0.05
+    "churn_probability": 0.05,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "9",
@@ -213,7 +229,9 @@
     "monthly_charges": 85.45,
     "total_charges": 1538.1,
     "churn": false,
-    "churn_probability": 0.33
+    "churn_probability": 0.33,
+    "status": "notnotified",
+    "notified": false
   },
   {
     "customer_id": "10",
@@ -237,6 +255,8 @@
     "monthly_charges": 92.8,
     "total_charges": 92.8,
     "churn": true,
-    "churn_probability": 0.82
+    "churn_probability": 0.82,
+    "status": "notnotified",
+    "notified": false
   }
 ]

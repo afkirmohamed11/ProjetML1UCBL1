@@ -10,7 +10,7 @@ def fetch_customers():
         
         # Execute query to fetch customers
         print('Fetching customers from database...')
-        query = "SELECT * FROM customers limit 10;"
+        query = "SELECT * FROM customers;"
         cursor.execute(query)
         customers = cursor.fetchall()
 
@@ -28,26 +28,37 @@ def fetch_customers():
 
 
 def fetch_customer_by_id(customer_id: str):
-    """Fetch a single customer by their ID."""
+    """Fetch a single customer by their ID and return a dict keyed by column names."""
+    from decimal import Decimal
+
     connection = None
     try:
-        # Establish connection to the database
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Execute query to fetch the customer by ID
         query = "SELECT * FROM customers WHERE customer_id = %s;"
         cursor.execute(query, (customer_id,))
-        customer = cursor.fetchone()
+        row = cursor.fetchone()
 
-        return customer
+        if row is None:
+            return None
+
+        # Map to dict using column names from cursor.description
+        columns = [desc[0] for desc in cursor.description]
+        data = dict(zip(columns, row))
+
+        # Ensure JSON-serializable types (e.g., Decimal -> float)
+        for k, v in list(data.items()):
+            if isinstance(v, Decimal):
+                data[k] = float(v)
+
+        return data
 
     except Exception as e:
         print(f"Error fetching customer by ID: {e}")
         raise
 
     finally:
-        # Close the connection
         if connection:
             cursor.close()
             connection.close()

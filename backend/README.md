@@ -29,6 +29,21 @@ backend/
    - Request Body: Customer data in JSON format
    - Response: `{ "churn_probability": <float> }`
 
+3. **Upload Customers CSV**
+    - **POST** `/customers/upload_csv`
+    - Content-Type: `multipart/form-data`
+    - Form field: `file` (CSV)
+    - Inserts/updates records into `customers` table.
+    - Required header: `customer_id`. All other headers are optional and validated/coerced via schema.
+    - Common headers:
+       `customer_id,gender,senior_citizen,partner,dependents,tenure,phone_service,multiple_lines,internet_service,online_security,online_backup,device_protection,tech_support,streaming_tv,streaming_movies,contract,paperless_billing,payment_method,monthly_charges,total_charges,churn,status,notified_date,first_name,last_name,email`
+    - Example:
+       ```bash
+       curl -X POST \
+          -F "file=@backend/app/artifacts/sample_new_customers.csv" \
+          http://localhost:8080/customers/upload_csv
+       ```
+
 ## Setup Instructions
 1. **Install Dependencies**:
    ```bash

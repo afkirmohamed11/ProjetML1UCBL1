@@ -8,3 +8,6 @@ _DEFAULT_MODEL_PATH = _BASE_DIR / "artifacts" / "model_pipeline.pkl"
 
 # Allow overriding via environment variable MODEL_PATH
 MODEL_PATH = os.getenv("MODEL_PATH", str(_DEFAULT_MODEL_PATH))
+
+K_RETRAIN = int(os.getenv("K_RETRAIN", 20))  # example
+COOLDOWN_MINUTES = int(os.getenv("COOLDOWN_MINUTES", 10))  # anti-boucle

@@ -27,3 +27,45 @@ def get_db_connection():
     except Exception as e:
         print(f"Error connecting to the database: {e}")
         raise
+
+def ensure_customers_table(conn):
+    """Create the customers table if it does not exist (superset schema)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS customers (
+                customer_id        TEXT PRIMARY KEY,
+                gender             TEXT,
+                senior_citizen     BOOLEAN,
+                partner            BOOLEAN,
+                dependents         BOOLEAN,
+                tenure             INTEGER,
+
+                phone_service      BOOLEAN,
+                multiple_lines     TEXT,
+
+                internet_service   TEXT,
+                online_security    TEXT,
+                online_backup      TEXT,
+                device_protection  TEXT,
+                tech_support       TEXT,
+                streaming_tv       TEXT,
+                streaming_movies   TEXT,
+
+                contract            TEXT,
+                paperless_billing   BOOLEAN,
+                payment_method      TEXT,
+
+                monthly_charges     NUMERIC(10,2),
+                total_charges       NUMERIC(10,2),
+
+                churn               BOOLEAN,
+                status              VARCHAR(20),
+                notified            BOOLEAN,
+                updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                first_name          VARCHAR(50),
+                last_name           VARCHAR(50),
+                email               VARCHAR(100)
+            )
+            """
+        )

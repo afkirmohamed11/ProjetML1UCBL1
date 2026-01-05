@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Literal, Optional, Union
 from uuid import UUID
+from datetime import datetime
 
 
 class PredictRequest(BaseModel):
@@ -66,3 +67,43 @@ class FeedbackResponse(BaseModel):
 
 class RetrainRequest(BaseModel):
     reason: Literal["feedback", "drift"]
+
+
+class CustomerDB(BaseModel):
+    """
+    Schema representing a row in the `customers` table.
+    All fields except `customer_id` are optional to allow partial CSV rows.
+    """
+    customer_id: Optional[str] = None
+    gender: Optional[str] = None
+    senior_citizen: Optional[bool] = None
+    partner: Optional[bool] = None
+    dependents: Optional[bool] = None
+    tenure: Optional[int] = None
+
+    phone_service: Optional[bool] = None
+    multiple_lines: Optional[str] = None
+
+    internet_service: Optional[str] = None
+    online_security: Optional[str] = None
+    online_backup: Optional[str] = None
+    device_protection: Optional[str] = None
+    tech_support: Optional[str] = None
+    streaming_tv: Optional[str] = None
+    streaming_movies: Optional[str] = None
+
+    contract: Optional[str] = None
+    paperless_billing: Optional[bool] = None
+    payment_method: Optional[str] = None
+
+    monthly_charges: Optional[float] = None
+    total_charges: Optional[float] = None
+
+    churn: Optional[bool] = None
+    status: Optional[str] = None
+    notified: Optional[bool] = None
+    updated_at: Optional[datetime] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None
+
