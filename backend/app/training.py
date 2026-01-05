@@ -1,8 +1,7 @@
 from fastapi import HTTPException
 from app.db_connection import get_db_connection
 
-COOLDOWN_MINUTES = 10  # anti-boucle
-
+from config import COOLDOWN_MINUTES
 
 def retrain_and_reload_model(reason: str):
     """

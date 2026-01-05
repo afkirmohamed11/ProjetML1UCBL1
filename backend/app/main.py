@@ -16,6 +16,8 @@ from pathlib import Path
 import csv
 import io
 from typing import List, Dict
+
+from config import K_RETRAIN
  
 
 # Dynamically add the ml_pipeline/src/pipeline/ directory to the Python path
@@ -356,7 +358,6 @@ async def upload_customers_csv(file: UploadFile = File(...)):
             conn.close()
 
 # > Feedback and Retraining Endpoints
-K_RETRAIN = 20  # exemple
 
 @app.post("/feedback", response_model=FeedbackResponse)
 def feedback(payload: FeedbackRequest, background: BackgroundTasks):
