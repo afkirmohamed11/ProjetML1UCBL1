@@ -272,11 +272,16 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Churn",
     cell: ({ row }) => (
       <Badge
-        variant={row.original.churn ? "destructive" : "outline"}
-        className="text-muted-foreground px-1.5"
+        variant="outline"
+        className={
+          row.original.churn
+            ? "bg-red-50 text-red-600 border-red-200"
+            : "text-muted-foreground"
+        }
       >
         {row.original.churn ? "Yes" : "No"}
       </Badge>
+
     ),
     enableHiding: false,
   },
