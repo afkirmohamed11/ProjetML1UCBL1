@@ -27,8 +27,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:8080
-      - CHOKIDAR_USEPOLLING=true
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - API_INTERNAL_URL=http://backend:8080
       - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/app

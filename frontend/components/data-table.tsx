@@ -105,7 +105,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { BellIcon } from "lucide-react"
+import { BellIcon, PlusIcon } from "lucide-react"
 
 import { useRouter } from "next/navigation"
 
@@ -313,6 +313,8 @@ export function DataTable({
   data?: z.infer<typeof schema>[] // Make the data prop optional
 }) {
   const [data, setData] = React.useState(() => initialData)
+  const [isUploading, setIsUploading] = React.useState(false)
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -372,6 +374,38 @@ export function DataTable({
     }
   }
 
+  async function handleCsvUpload(file: File) {
+    setIsUploading(true)
+    try {
+      const form = new FormData()
+      form.append("file", file)
+
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+      const res = await fetch(`${baseUrl}/customers/upload_csv`, {
+        method: "POST",
+        body: form,
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      const processed = json?.processed ?? 0
+      const errors = json?.errors?.length ?? 0
+      const generated = json?.generated_ids?.length ?? 0
+      toast.success(
+        `Uploaded ${processed} customers${generated ? `, ${generated} IDs generated` : ""}${errors ? `, ${errors} errors` : ""}`
+      )
+    } catch (err: any) {
+      toast.error(`Upload failed: ${err?.message || String(err)}`)
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   return (
     <Tabs
       defaultValue="outline"
@@ -380,6 +414,29 @@ export function DataTable({
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) handleCsvUpload(file)
+            }}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <IconLoader className="h-5 w-5 mr-2 animate-spin" />
+            ) : (
+              <PlusIcon className="h-5 w-5 mr-2" />
+            )}
+            New Customers
+          </Button>
           <Button variant="outline" size="sm" onClick={() => alert('Customers have been notified!')}>
                 <BellIcon className="h-5 w-5 mr-2" />
                 Notify Customers
