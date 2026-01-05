@@ -1,16 +1,22 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.schemas import PredictInput, PredictRequest, PredictResponse
 from app.predict import predict_churn
 from app.model import get_model_info
 from app.data_fetch import fetch_customers, fetch_customer_by_id, fetch_customer_features
 from uuid import uuid4
-from app.db_connection import get_db_connection
+from app.db_connection import get_db_connection, ensure_customers_table
 from psycopg2.errors import UniqueViolation
-from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest
+from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest, CustomerDB
+from app.utils import generate_customer_id
+from app.training import start_retrain
 import json
 import sys
 from pathlib import Path
+import csv
+import io
+from typing import List, Dict
+ 
 
 # Dynamically add the ml_pipeline/src/pipeline/ directory to the Python path
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -18,7 +24,7 @@ ML_PIPELINE_SRC = BASE_DIR / "ml_pipeline" / "src" / "pipeline"
 if ML_PIPELINE_SRC not in sys.path:
     sys.path.append(str(ML_PIPELINE_SRC))
 
-
+# FastAPI app initialization
 app = FastAPI(title="Telco Churn Prediction API")
 
 app.add_middleware(
@@ -33,7 +39,7 @@ app.add_middleware(
 def health():
     return {"status": "ok"}
 
-
+# > Model Endpoints
 @app.post("/predictpyload", response_model=PredictResponse)
 def predict_payload(payload: PredictRequest):
     """Endpoint to predict customer churn probability."""
@@ -115,6 +121,8 @@ def model_info():
     """Return metadata about the loaded model to help integration."""
     return get_model_info()
 
+# > Customer Data Endpoints
+REQUIRED_UPLOAD_COLUMNS: List[str] = []
 
 @app.get("/customers")
 def get_customers():
@@ -136,7 +144,218 @@ def get_customer_by_id(customer_id: str):
     except Exception as e:
         return {"error": str(e)}
 
+@app.post("/customers/upload_csv")
+async def upload_customers_csv(file: UploadFile = File(...)):
+    """
+    Upload a CSV file containing customer records to insert/update into the `customers` table.
 
+    Expected headers:
+    customer_id,email,gender,senior_citizen,partner,dependents,tenure,phone_service,multiple_lines,
+    internet_service,online_security,online_backup,device_protection,tech_support,streaming_tv,streaming_movies,
+    contract,paperless_billing,payment_method,monthly_charges,total_charges
+
+    Returns summary with processed rows and any per-row errors.
+    """
+    filename = file.filename or ""
+    if not filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Please upload a CSV file")
+
+    # Read and decode the uploaded CSV
+    content_bytes = await file.read()
+    try:
+        content = content_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        # Fallback for BOM or other encodings
+        content = content_bytes.decode("utf-8", errors="ignore")
+
+    reader = csv.DictReader(io.StringIO(content))
+    headers = [h.strip() for h in reader.fieldnames or []]
+    missing = [c for c in REQUIRED_UPLOAD_COLUMNS if c not in headers]
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Missing required columns: {', '.join(missing)}"
+        )
+
+    conn = None
+    processed = 0
+    errors: List[Dict] = []
+    try:
+        conn = get_db_connection()
+        conn.autocommit = False
+
+        ensure_customers_table(conn)
+
+        with conn.cursor() as cur:
+            upsert_sql = (
+                """
+                INSERT INTO customers (
+                    customer_id, gender, senior_citizen, partner, dependents, tenure,
+                    phone_service, multiple_lines, internet_service, online_security, online_backup,
+                    device_protection, tech_support, streaming_tv, streaming_movies, contract,
+                    paperless_billing, payment_method, monthly_charges, total_charges,
+                    churn, status, notified, first_name, last_name, email
+                ) VALUES (
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s
+                )
+                ON CONFLICT (customer_id) DO UPDATE SET
+                    gender=EXCLUDED.gender,
+                    senior_citizen=EXCLUDED.senior_citizen,
+                    partner=EXCLUDED.partner,
+                    dependents=EXCLUDED.dependents,
+                    tenure=EXCLUDED.tenure,
+                    phone_service=EXCLUDED.phone_service,
+                    multiple_lines=EXCLUDED.multiple_lines,
+                    internet_service=EXCLUDED.internet_service,
+                    online_security=EXCLUDED.online_security,
+                    online_backup=EXCLUDED.online_backup,
+                    device_protection=EXCLUDED.device_protection,
+                    tech_support=EXCLUDED.tech_support,
+                    streaming_tv=EXCLUDED.streaming_tv,
+                    streaming_movies=EXCLUDED.streaming_movies,
+                    contract=EXCLUDED.contract,
+                    paperless_billing=EXCLUDED.paperless_billing,
+                    payment_method=EXCLUDED.payment_method,
+                    monthly_charges=EXCLUDED.monthly_charges,
+                    total_charges=EXCLUDED.total_charges,
+                    churn=EXCLUDED.churn,
+                    status=EXCLUDED.status,
+                    notified=EXCLUDED.notified,
+                    first_name=EXCLUDED.first_name,
+                    last_name=EXCLUDED.last_name,
+                    email=EXCLUDED.email,
+                    updated_at=NOW()
+                """
+            )
+            insert_no_conflict_sql = (
+                """
+                INSERT INTO customers (
+                    customer_id, gender, senior_citizen, partner, dependents, tenure,
+                    phone_service, multiple_lines, internet_service, online_security, online_backup,
+                    device_protection, tech_support, streaming_tv, streaming_movies, contract,
+                    paperless_billing, payment_method, monthly_charges, total_charges,
+                    churn, status, notified, first_name, last_name, email
+                ) VALUES (
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s
+                )
+                ON CONFLICT (customer_id) DO NOTHING
+                """
+            )
+
+            generated_ids: List[Dict] = []
+            for row_idx, row in enumerate(reader, start=2):
+                try:
+                    # Validate and normalize via schema
+                    cust = CustomerDB(**row)
+                    # If customer_id is missing, generate and insert with conflict avoidance
+                    if not cust.customer_id:
+                        assigned_id = None
+                        # Try a few times in the rare case of collision
+                        for _ in range(8):
+                            candidate = generate_customer_id()
+                            values = (
+                                candidate,
+                                cust.gender,
+                                cust.senior_citizen,
+                                cust.partner,
+                                cust.dependents,
+                                cust.tenure,
+                                cust.phone_service,
+                                cust.multiple_lines,
+                                cust.internet_service,
+                                cust.online_security,
+                                cust.online_backup,
+                                cust.device_protection,
+                                cust.tech_support,
+                                cust.streaming_tv,
+                                cust.streaming_movies,
+                                cust.contract,
+                                cust.paperless_billing,
+                                cust.payment_method,
+                                cust.monthly_charges,
+                                cust.total_charges,
+                                cust.churn,
+                                cust.status,
+                                cust.notified,
+                                cust.first_name,
+                                cust.last_name,
+                                cust.email,
+                            )
+                            cur.execute(insert_no_conflict_sql, values)
+                            if cur.rowcount == 1:
+                                assigned_id = candidate
+                                generated_ids.append({"row": row_idx, "customer_id": assigned_id})
+                                processed += 1
+                                break
+                        if not assigned_id:
+                            raise ValueError("Failed to assign unique customer_id after multiple attempts")
+                    else:
+                        # Explicit ID present -> upsert
+                        values = (
+                            cust.customer_id,
+                            cust.gender,
+                            cust.senior_citizen,
+                            cust.partner,
+                            cust.dependents,
+                            cust.tenure,
+                            cust.phone_service,
+                            cust.multiple_lines,
+                            cust.internet_service,
+                            cust.online_security,
+                            cust.online_backup,
+                            cust.device_protection,
+                            cust.tech_support,
+                            cust.streaming_tv,
+                            cust.streaming_movies,
+                            cust.contract,
+                            cust.paperless_billing,
+                            cust.payment_method,
+                            cust.monthly_charges,
+                            cust.total_charges,
+                            cust.churn,
+                            cust.status,
+                            cust.notified,
+                            cust.first_name,
+                            cust.last_name,
+                            cust.email,
+                        )
+                        cur.execute(upsert_sql, values)
+                        processed += 1
+                except Exception as e:
+                    errors.append({"row": row_idx, "error": str(e)})
+
+        conn.commit()
+
+        return {
+            "status": "ok",
+            "processed": processed,
+            "errors": errors,
+            "required_columns": REQUIRED_UPLOAD_COLUMNS,
+            "target_table": "customers",
+            "generated_ids": generated_ids,
+        }
+
+    except HTTPException:
+        if conn:
+            conn.rollback()
+        raise
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn:
+            conn.close()
+
+# > Feedback and Retraining Endpoints
 K_RETRAIN = 20  # exemple
 
 @app.post("/feedback", response_model=FeedbackResponse)
@@ -182,7 +401,7 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
         conn.commit()
         # Déclencher /retrain via la logique training_runs
         if retrain_triggered:
-            background.add_task(_trigger_retrain_internal) 
+            background.add_task(start_retrain, "feedback") 
 
 
         return {
@@ -203,98 +422,7 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
         if conn:
             conn.close()
 
-def _trigger_retrain_internal():
-    # On réutilise la logique /retrain existante (training_runs + cooldown + lock)
-    retrain(RetrainRequest(reason="feedback"))
-
-
-COOLDOWN_MINUTES = 10  # anti-boucle
-
 @app.post("/retrain")
 def retrain(payload: RetrainRequest):
-    conn = None
-    try:
-        conn = get_db_connection()
-        conn.autocommit = False
+    return start_retrain(payload.reason)
 
-        with conn.cursor() as cur:
-            # 1) cooldown: si retrain récent, skip
-            cur.execute("""
-                SELECT started_at
-                FROM training_runs
-                WHERE status IN ('started','success')
-                ORDER BY started_at DESC
-                LIMIT 1
-            """)
-            last = cur.fetchone()
-            if last is not None:
-                # côté DB on fait simple: si < cooldown minutes, on refuse
-                cur.execute("SELECT NOW() - %s::timestamptz < (%s || ' minutes')::interval",
-                            (last[0], COOLDOWN_MINUTES))
-                too_soon = cur.fetchone()[0]
-                if too_soon:
-                    conn.commit()
-                    return {"status": "skipped", "message": "cooldown active"}
-
-            # 2) lock “soft” : si un run started existe, refuse
-            cur.execute("SELECT COUNT(*) FROM training_runs WHERE status='started'")
-            if cur.fetchone()[0] > 0:
-                conn.commit()
-                return {"status": "skipped", "message": "retrain already running"}
-
-            # 3) create run
-            cur.execute("""
-                INSERT INTO training_runs (reason, status)
-                VALUES (%s, 'started')
-                RETURNING run_id
-            """, (payload.reason,))
-            run_id = cur.fetchone()[0]
-
-            # 4) snapshot nouveaux feedback (pour reset compteur)
-            cur.execute("SELECT COUNT(*) FROM feedback WHERE used_for_training=FALSE")
-            new_feedback = int(cur.fetchone()[0])
-
-            # 5) reset compteur (on marque comme utilisés) — prend tout le backlog
-            cur.execute("""
-                UPDATE feedback
-                SET used_for_training = TRUE
-                WHERE used_for_training = FALSE
-            """)
-
-        conn.commit()
-
-        # 6) retrain réel (à brancher)
-        retrain_and_reload_model(reason=payload.reason)
-
-        # 7) success
-        conn = get_db_connection()
-        with conn.cursor() as cur:
-            cur.execute("""
-                UPDATE training_runs
-                SET status='success', ended_at=NOW(), notes=%s
-                WHERE run_id=%s
-            """, (f"used_new_feedback={new_feedback}", run_id))
-        conn.commit()
-
-        return {"status": "ok", "run_id": run_id, "reason": payload.reason, "used_new_feedback": new_feedback}
-
-    except Exception as e:
-        # mark failed si possible
-        try:
-            if conn:
-                conn.rollback()
-        except Exception:
-            pass
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        if conn:
-            conn.close()
-
-
-def retrain_and_reload_model(reason: str):
-    """
-    Branche ici votre vrai retrain.
-    - tu peux réentraîner sur ref + TOUT feedback (même anciens)
-    - le reset used_for_training sert juste à gérer le déclenchement
-    """
-    print(f"Retraining... reason={reason} (placeholder)")
