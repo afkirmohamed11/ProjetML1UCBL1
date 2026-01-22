@@ -48,12 +48,18 @@ const data = {
       icon: IconUsers,
 
     },
-    {
-      title: "Workflows",
-      url: "http://localhost:5678",
-      icon: IconListDetails,
-      external: true,
-    },
+    // {
+    //   title: "Workflows",
+    //   url: "http://localhost:5678",
+    //   icon: IconListDetails,
+    //   external: true,
+    // },
+    // {
+    //   title: "Model Tracking",
+    //   url: "http://localhost:TODO",
+    //   icon: IconSettings,
+    //   external: true,
+    // },
     // {
     //   title: "Analytics",
     //   url: "#",
