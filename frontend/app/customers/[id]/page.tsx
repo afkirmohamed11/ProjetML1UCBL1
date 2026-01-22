@@ -55,7 +55,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
         first_name: String(get("first_name") ?? ""),
         last_name: String(get("last_name") ?? ""),
         email: String(get("email") ?? ""),
-        churn_probability: typeof get("churn") === "boolean" ? (get("churn") ? 1 : 0) : 0,
+        churn_probability: num(get("churn_probability")),
       };
 
   };
@@ -78,9 +78,11 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader title="Try Out The Model" />
-          <div className="w-full md:max-w-6xl">
-              <div className="rounded-xl border bg-background p-4">
-                <TableCellViewer data={mapped} />
+          <div className="flex justify-center w-full px-4 lg:px-6">
+              <div className="w-full md:max-w-6xl">
+                  <div className="rounded-xl border bg-background p-4">
+                    <TableCellViewer data={mapped} />
+                  </div>
               </div>
           </div>
       </SidebarInset>

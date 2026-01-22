@@ -47,10 +47,40 @@ def fetch_customer_by_id(customer_id: str):
         columns = [desc[0] for desc in cursor.description]
         data = dict(zip(columns, row))
 
+        # Map notified_date to notified for frontend compatibility
+        if 'notified_date' in data and 'notified' not in data:
+            data['notified'] = data.get('notified_date', False)
+
+        # Ensure status has a default value if None
+        if data.get('status') is None or data.get('status') == '':
+            data['status'] = 'not_notified'
+
         # Ensure JSON-serializable types (e.g., Decimal -> float)
         for k, v in list(data.items()):
             if isinstance(v, Decimal):
                 data[k] = float(v)
+
+        # Fetch latest prediction for this customer
+        cursor.execute(
+            """
+            SELECT churn_score, churn_label, created_at 
+            FROM predictions 
+            WHERE customer_id = %s 
+            ORDER BY created_at DESC 
+            LIMIT 1
+            """,
+            (customer_id,)
+        )
+        prediction_row = cursor.fetchone()
+        
+        if prediction_row:
+            data['churn_probability'] = float(prediction_row[0])
+            data['churn_prediction'] = prediction_row[1]
+            data['prediction_date'] = prediction_row[2].isoformat() if prediction_row[2] else None
+        else:
+            data['churn_probability'] = 0.0
+            data['churn_prediction'] = False
+            data['prediction_date'] = None
 
         return data
 
