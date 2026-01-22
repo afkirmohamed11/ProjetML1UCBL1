@@ -28,6 +28,7 @@ import {
   IconChevronsRight,
   IconCircleCheckFilled,
   IconDotsVertical,
+  IconFilter,
   IconGripVertical,
   IconLayoutColumns,
   IconLoader,
@@ -419,6 +420,48 @@ export function DataTable({
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <IconFilter className="h-4 w-4 mr-2" />
+                Status
+                <IconChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuCheckboxItem
+                checked={!table.getColumn("status")?.getFilterValue()}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue(undefined)}
+              >
+                All
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "notified"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("notified")}
+              >
+                Notified
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "not_notified"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("not_notified")}
+              >
+                Not Notified
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "responded_ok"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("responded_ok")}
+              >
+                Responded OK
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "responded_no"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("responded_no")}
+              >
+                Responded No
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <input
             ref={fileInputRef}
             type="file"

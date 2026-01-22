@@ -49,9 +49,10 @@ const data = {
 
     },
     {
-      title: "Try Churn AI",
-      url: "/model",
+      title: "Workflows",
+      url: "http://localhost:5678",
       icon: IconListDetails,
+      external: true,
     },
     // {
     //   title: "Analytics",
