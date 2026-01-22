@@ -8,9 +8,10 @@ import TableCellViewer from "@/components/TableCellViewer"
 import type { PredictRecord } from "@/components/TableCellViewer"
 
 
-export default async function CustomerPage({ params }: { params: { id: string } }) {
+export default async function CustomerPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const res = await fetch(
-    `${process.env.API_INTERNAL_URL}/customers/${params.id}`,
+    `${process.env.API_INTERNAL_URL}/customers/${id}`,
     { cache: "no-store" }
   );
 
