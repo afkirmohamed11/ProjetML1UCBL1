@@ -5,6 +5,7 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import TableCellViewer from "@/components/TableCellViewer"
+import CustomerActions from "@/components/customer-actions"
 import type { PredictRecord } from "@/components/TableCellViewer"
 
 
@@ -77,11 +78,14 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title="Try Out The Model" />
+        <SiteHeader title="Customer Details" />
           <div className="flex justify-center w-full px-4 lg:px-6">
-              <div className="w-full md:max-w-6xl">
+              <div className="w-full md:max-w-6xl space-y-4">
                   <div className="rounded-xl border bg-background p-4">
                     <TableCellViewer data={mapped} />
+                  </div>
+                  <div className="flex items-center justify-end gap-2 p-4">
+                    <CustomerActions customerId={id} />
                   </div>
               </div>
           </div>

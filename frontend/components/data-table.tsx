@@ -33,6 +33,7 @@ import {
   IconLayoutColumns,
   IconLoader,
   IconPlus,
+  IconRadar,
   IconTrendingUp,
 } from "@tabler/icons-react"
 import {
@@ -412,6 +413,70 @@ export function DataTable({
     }
   }
 
+  async function handleNotifyCustomers() {
+    const selectedRows = table.getFilteredSelectedRowModel().rows
+    
+    if (selectedRows.length === 0) {
+      toast.error("Please select at least one customer to notify")
+      return
+    }
+
+    const customerIds = selectedRows.map(row => row.original.id)
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const res = await fetch(`${baseUrl}/notify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ customer_ids: customerIds }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      toast.success(json?.message || `${selectedRows.length} customer(s) notified successfully!`)
+    } catch (err: any) {
+      toast.error(`Notification failed: ${err?.message || String(err)}`)
+    }
+  }
+
+  async function handlePredictChurn() {
+    const selectedRows = table.getFilteredSelectedRowModel().rows
+    
+    if (selectedRows.length === 0) {
+      toast.error("Please select at least one customer for prediction")
+      return
+    }
+
+    const customerIds = selectedRows.map(row => row.original.id)
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const res = await fetch(`${baseUrl}/predict`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ customer_ids: customerIds }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      toast.success(json?.message || `Churn prediction completed for ${selectedRows.length} customer(s)!`)
+    } catch (err: any) {
+      toast.error(`Prediction failed: ${err?.message || String(err)}`)
+    }
+  }
+
   return (
     <Tabs
       defaultValue="outline"
@@ -462,6 +527,26 @@ export function DataTable({
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <IconFilter className="h-4 w-4 mr-2" />
+                Actions
+                <IconChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleNotifyCustomers}>
+                <BellIcon className="h-4 w-4 mr-2" />
+                Notify Customers
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handlePredictChurn}>
+                <IconRadar className="h-4 w-4 mr-2" />
+                Predict Churn
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <input
             ref={fileInputRef}
             type="file"
@@ -484,10 +569,6 @@ export function DataTable({
               <PlusIcon className="h-5 w-5 mr-2" />
             )}
             New Customers
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => alert('Customers have been notified!')}>
-                <BellIcon className="h-5 w-5 mr-2" />
-                Notify Customers
           </Button>
         </div>
       </div>
