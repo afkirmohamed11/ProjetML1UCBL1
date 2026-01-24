@@ -7,9 +7,8 @@ from app.data_fetch import fetch_customers, fetch_customer_by_id, fetch_customer
 from uuid import uuid4
 from app.db_connection import get_db_connection, ensure_customers_table
 from psycopg2.errors import UniqueViolation
-from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest, CustomerDB, ChatRequest, RAGResponse, SQLResponse
+from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest, CustomerDB
 from app.utils import generate_customer_id
-from app.chatbot import rag_query, text_to_sql, chat as chatbot_chat
 from app.training import start_retrain
 import json
 import sys
@@ -428,31 +427,3 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
 def retrain(payload: RetrainRequest):
     return start_retrain(payload.reason)
 
-
-# ============== CHATBOT ENDPOINTS ==============
-
-@app.post("/chat/rag", response_model=RAGResponse)
-def chat_rag(payload: ChatRequest):
-    """Answer questions using RAG with documentation."""
-    answer = rag_query(payload.question)
-    return {"question": payload.question, "answer": answer}
-
-
-@app.post("/chat/sql", response_model=SQLResponse)
-def chat_sql(payload: ChatRequest):
-    """Answer questions by querying the database with Text-to-SQL."""
-    result = text_to_sql(payload.question)
-    return {
-        "question": payload.question,
-        "sql": result["sql"],
-        "result": result["result"],
-        "answer": result["answer"],
-        "error": result["error"]
-    }
-
-
-@app.post("/chat")
-def chat(payload: ChatRequest):
-    """Unified chat endpoint - LLM decides whether to use RAG or SQL."""
-    result = chatbot_chat(payload.question)
-    return result

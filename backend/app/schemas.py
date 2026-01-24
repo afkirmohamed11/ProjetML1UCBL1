@@ -107,24 +107,3 @@ class CustomerDB(BaseModel):
     last_name: Optional[str] = None
     email: Optional[str] = None
 
-
-# ============== CHATBOT SCHEMAS ==============
-
-class ChatRequest(BaseModel):
-    """Request for chatbot queries."""
-    question: str
-
-
-class RAGResponse(BaseModel):
-    """Response for RAG queries."""
-    question: str
-    answer: str
-
-
-class SQLResponse(BaseModel):
-    """Response for Text-to-SQL queries."""
-    question: str
-    sql: Optional[str] = None
-    result: Optional[list] = None
-    answer: str
-    error: bool = False
