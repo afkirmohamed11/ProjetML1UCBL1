@@ -162,12 +162,13 @@ def predict_batch(payload: dict):
             
             # Insert into predictions table
             conn = get_db_connection()
+            token = uuid4()
             try:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        INSERT INTO predictions (customer_id, churn_score, churn_label, model_version, features_json)
-                        VALUES (%s, %s, %s, %s, %s::jsonb)
+                        INSERT INTO predictions (customer_id, churn_score, churn_label, model_version, features_json, token)
+                        VALUES (%s, %s, %s, %s, %s::jsonb, %s)
                         RETURNING prediction_id
                         """,
                         (
@@ -175,7 +176,8 @@ def predict_batch(payload: dict):
                             float(proba), 
                             bool(pred), 
                             'v1', # MODEL_PATH.split("/")[-1],
-                            json.dumps(features)
+                            json.dumps(features),
+                            str(token)
                          )
                     )
                     prediction_id = cur.fetchone()[0]
@@ -587,7 +589,7 @@ def notify_customers(payload: dict):
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        SELECT prediction_id, churn_score, churn_label 
+                        SELECT prediction_id, churn_score, churn_label, token
                         FROM predictions 
                         WHERE customer_id = %s 
                         ORDER BY created_at DESC 
@@ -602,12 +604,14 @@ def notify_customers(payload: dict):
                         continue
                     
                     prediction_id = prediction_row[0]
+                    token = prediction_row[3]
             finally:
                 conn.close()
             
             # Call n8n webhook to send notification
             webhook_url = "http://n8n:5678/webhook/notify-churn"
-            webhook_payload = {"customer_id": str(customer_id)}
+            webhook_payload = {"customer_id": str(customer_id), 
+                               'token': str(token),}
             
             try:
                 response = requests.post(
