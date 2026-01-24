@@ -174,7 +174,7 @@ def fetch_customer_features(conn, customer_id: str) -> dict | None:
                    online_security, online_backup, device_protection, tech_support,
                    streaming_tv, streaming_movies, contract, paperless_billing,
                    payment_method, monthly_charges, total_charges
-            FROM new_customers
+            FROM customers
             WHERE customer_id = %s
             """,
             (customer_id,)

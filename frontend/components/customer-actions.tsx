@@ -32,12 +32,11 @@ export default function CustomerActions({ customerId }: { customerId: string }) 
   async function handlePredictChurn() {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL
-      const res = await fetch(`${baseUrl}/predict`, {
+      const res = await fetch(`${baseUrl}/predict/customer/${customerId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ customer_ids: [parseInt(customerId)] }),
       })
 
       if (!res.ok) {
@@ -47,6 +46,8 @@ export default function CustomerActions({ customerId }: { customerId: string }) 
 
       const json = await res.json()
       toast.success(json?.message || "Churn prediction completed!")
+      // Refresh the page to show updated prediction
+      window.location.reload()
     } catch (err: any) {
       toast.error(`Prediction failed: ${err?.message || String(err)}`)
     }

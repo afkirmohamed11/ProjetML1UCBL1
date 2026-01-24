@@ -17,14 +17,24 @@ import csv
 import io
 from typing import List, Dict
 
-from config import K_RETRAIN
+from config import K_RETRAIN, MODEL_PATH
  
 
-# Dynamically add the ml_pipeline/src/pipeline/ directory to the Python path
+# Dynamically add the pipeline directory to Python path
+# For Docker: use the copied pipeline in app/pipeline
+# For local: use ml_pipeline/src/pipeline
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+APP_PIPELINE_DIR = Path(__file__).resolve().parent / "pipeline"
 ML_PIPELINE_SRC = BASE_DIR / "ml_pipeline" / "src" / "pipeline"
-if ML_PIPELINE_SRC not in sys.path:
-    sys.path.append(str(ML_PIPELINE_SRC))
+
+# Add app/pipeline first (for Docker), then ml_pipeline/src/pipeline (for local)
+if APP_PIPELINE_DIR.exists() and str(APP_PIPELINE_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_PIPELINE_DIR))
+    print(f"Added {APP_PIPELINE_DIR} to sys.path")
+
+if ML_PIPELINE_SRC.exists() and str(ML_PIPELINE_SRC) not in sys.path:
+    sys.path.insert(0, str(ML_PIPELINE_SRC))
+    print(f"Added {ML_PIPELINE_SRC} to sys.path")
 
 # FastAPI app initialization
 app = FastAPI(title="Telco Churn Prediction API")
@@ -117,6 +127,133 @@ def predict(payload: "PredictInput"):
         "churn_probability": float(proba),
         "prediction": pred
     }
+
+@app.post("/predict/batch")
+def predict_batch(payload: dict):
+    """
+    Predict churn for multiple customers.
+    Expects: { "customer_ids": [id1, id2, ...] }
+    Returns: { "message": "...", "predictions": [...], "failed": [...] }
+    """
+    customer_ids = payload.get("customer_ids", [])
+    if not customer_ids:
+        raise HTTPException(status_code=400, detail="customer_ids is required")
+    
+    predictions = []
+    failed = []
+    
+    for customer_id in customer_ids:
+        try:
+            # Fetch customer features
+            conn = get_db_connection()
+            try:
+                features = fetch_customer_features(conn, str(customer_id))
+            finally:
+                conn.close()
+            
+            if features is None:
+                failed.append({"customer_id": customer_id, "error": "Customer not found"})
+                continue
+            
+            # Make prediction
+            proba = predict_churn(features)
+            pred = 1 if proba >= 0.5 else 0
+            
+            # Insert into predictions table
+            conn = get_db_connection()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO predictions (customer_id, churn_score, churn_label, model_version, features_json)
+                        VALUES (%s, %s, %s, %s, %s::jsonb)
+                        RETURNING prediction_id
+                        """,
+                        (
+                            str(customer_id), 
+                            float(proba), 
+                            bool(pred), 
+                            'v1', # MODEL_PATH.split("/")[-1],
+                            json.dumps(features)
+                         )
+                    )
+                    prediction_id = cur.fetchone()[0]
+                conn.commit()
+                
+                predictions.append({
+                    "customer_id": customer_id,
+                    "prediction_id": prediction_id,
+                    "churn_probability": float(proba),
+                    "churn_label": bool(pred)
+                })
+            except Exception as e:
+                conn.rollback()
+                failed.append({"customer_id": customer_id, "error": str(e)})
+            finally:
+                conn.close()
+                
+        except Exception as e:
+            failed.append({"customer_id": customer_id, "error": str(e)})
+    
+    return {
+        "message": f"Processed {len(predictions)} predictions, {len(failed)} failed",
+        "predictions": predictions,
+        "failed": failed
+    }
+
+@app.post("/predict/customer/{customer_id}")
+def predict_customer(customer_id: str):
+    """
+    Predict churn for a single customer by ID.
+    Returns: { "customer_id": "...", "prediction_id": ..., "churn_probability": ..., "churn_label": ... }
+    """
+    try:
+        # Fetch customer features
+        conn = get_db_connection()
+        try:
+            features = fetch_customer_features(conn, customer_id)
+        finally:
+            conn.close()
+        
+        if features is None:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        
+        # Make prediction
+        proba = predict_churn(features)
+        pred = 1 if proba >= 0.5 else 0
+        
+        # Insert into predictions table
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO predictions (customer_id, churn_score, churn_label, model_version)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING prediction_id
+                    """,
+                    (customer_id, float(proba), bool(pred), "v1")
+                )
+                prediction_id = cur.fetchone()[0]
+            conn.commit()
+            
+            return {
+                "message": "Prediction completed successfully",
+                "customer_id": customer_id,
+                "prediction_id": prediction_id,
+                "churn_probability": float(proba),
+                "churn_label": bool(pred)
+            }
+        except Exception as e:
+            conn.rollback()
+            raise HTTPException(status_code=500, detail=f"Failed to save prediction: {e}")
+        finally:
+            conn.close()
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/model_info")
 def model_info():

@@ -485,7 +485,7 @@ export function DataTable({
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL
-      const res = await fetch(`${baseUrl}/predict`, {
+      const res = await fetch(`${baseUrl}/predict/batch`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -499,7 +499,18 @@ export function DataTable({
       }
 
       const json = await res.json()
-      toast.success(json?.message || `Churn prediction completed for ${selectedRows.length} customer(s)!`)
+      const successCount = json?.predictions?.length || 0
+      const failCount = json?.failed?.length || 0
+      
+      if (successCount > 0) {
+        toast.success(json?.message || `Predictions completed for ${successCount} customer(s)!`)
+        // Refresh the page to show updated predictions
+        window.location.reload()
+      }
+      
+      if (failCount > 0) {
+        toast.warning(`${failCount} prediction(s) failed`)
+      }
     } catch (err: any) {
       toast.error(`Prediction failed: ${err?.message || String(err)}`)
     }
