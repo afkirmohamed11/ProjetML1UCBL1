@@ -14,7 +14,7 @@ services:
     env_file:
       - ./backend/.env
     networks:
-      - app_net          
+      - prod_net          
       
 
   frontend:
@@ -25,7 +25,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - app_net     
+      - prod_net     
 
 
     # n8n:
@@ -60,7 +60,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
     networks:
-      - monitoring_net
+      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -75,7 +75,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
-      - monitoring_net
+      - monitoring
     depends_on:
       - prometheus
 
@@ -88,15 +88,15 @@ services:
       - "8020:8020"
 
     networks:
-      - monitoring_net
+      - monitoring
 
 # ==========================================
 # DÉFINITION DES RÉSEAUX
 # ==========================================
 networks:
-  app_net:
+  prod_net:
     driver: bridge
-  monitoring_net:
+  monitoring:
     driver: bridge
 
 volumes:
