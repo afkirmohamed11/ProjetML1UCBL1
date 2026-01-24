@@ -7,6 +7,7 @@ from app.data_fetch import fetch_customers, fetch_customer_by_id, fetch_customer
 from uuid import uuid4
 from app.db_connection import get_db_connection, ensure_customers_table
 from psycopg2.errors import UniqueViolation
+from psycopg2 import Error as PsycopgError
 from app.schemas import FeedbackRequest, FeedbackResponse, RetrainRequest, CustomerDB
 from app.utils import generate_customer_id
 from app.training import start_retrain
@@ -525,13 +526,24 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
             try:
                 cur.execute(
                     """
-                    INSERT INTO feedback (prediction_id, answer, feedback_label, used_for_training, sent_at, answered_at)
-                    VALUES (%s, %s, %s, FALSE, NOW(), NOW())
+                    UPDATE feedback
+                    SET answer = %s,
+                        feedback_label = %s,
+                        used_for_training = FALSE,
+                        answered_at = NOW()
+                    WHERE prediction_id = %s
+                    AND answer IS NULL
+                    RETURNING feedback_id
                     """,
-                    (prediction_id, payload.answer, int(payload.feedback_label))
+                    (payload.answer, int(payload.feedback_label), prediction_id)
                 )
-            except UniqueViolation:
-                raise HTTPException(status_code=409, detail="feedback already received for this prediction_id")
+
+                row = cur.fetchone()
+                if row is None:
+                    raise HTTPException(status_code=404, detail="No pending feedback found (or already answered).")
+
+            except PsycopgError:
+                raise HTTPException(status_code=500, detail="Database error")
 
             # 3) compter les feedbacks non utilisés
             cur.execute("SELECT COUNT(*) FROM feedback WHERE used_for_training = FALSE")
