@@ -16,6 +16,7 @@ from pathlib import Path
 import csv
 import io
 from typing import List, Dict
+import requests
 
 from config import K_RETRAIN, MODEL_PATH
  
@@ -563,4 +564,107 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
 @app.post("/retrain")
 def retrain(payload: RetrainRequest):
     return start_retrain(payload.reason)
+
+@app.post("/notify")
+def notify_customers(payload: dict):
+    """
+    Notify customers who have predictions via n8n webhook.
+    Expects: { "customer_ids": [id1, id2, ...] }
+    Returns: { "message": "...", "notified": [...], "failed": [...] }
+    """
+    customer_ids = payload.get("customer_ids", [])
+    if not customer_ids:
+        raise HTTPException(status_code=400, detail="customer_ids is required")
+    
+    notified = []
+    failed = []
+    
+    for customer_id in customer_ids:
+        try:
+            # Check if customer has a prediction
+            conn = get_db_connection()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        SELECT prediction_id, churn_score, churn_label 
+                        FROM predictions 
+                        WHERE customer_id = %s 
+                        ORDER BY created_at DESC 
+                        LIMIT 1
+                        """,
+                        (str(customer_id),)
+                    )
+                    prediction_row = cur.fetchone()
+                    
+                    if not prediction_row:
+                        failed.append({"customer_id": customer_id, "error": "No prediction found"})
+                        continue
+                    
+                    prediction_id = prediction_row[0]
+            finally:
+                conn.close()
+            
+            # Call n8n webhook to send notification
+            webhook_url = "http://n8n:5678/webhook/notify-churn"
+            webhook_payload = {"customer_id": str(customer_id)}
+            
+            try:
+                response = requests.post(
+                    webhook_url,
+                    json=webhook_payload,
+                    timeout=10
+                )
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                failed.append({"customer_id": customer_id, "error": f"Webhook failed: {str(e)}"})
+                continue
+            
+            # Insert/update feedback table with sent_at timestamp
+            conn = get_db_connection()
+            try:
+                with conn.cursor() as cur:
+                    # Check if feedback already exists for this prediction
+                    cur.execute(
+                        "SELECT feedback_id FROM feedback WHERE prediction_id = %s",
+                        (prediction_id,)
+                    )
+                    existing = cur.fetchone()
+                    
+                    if existing:
+                        # Update sent_at timestamp
+                        cur.execute(
+                            "UPDATE feedback SET sent_at = NOW() WHERE prediction_id = %s",
+                            (prediction_id,)
+                        )
+                    else:
+                        # Insert new feedback record
+                        cur.execute(
+                            """
+                            INSERT INTO feedback (prediction_id, sent_at, used_for_training)
+                            VALUES (%s, NOW(), FALSE)
+                            """,
+                            (prediction_id,)
+                        )
+                conn.commit()
+                
+                notified.append({
+                    "customer_id": customer_id,
+                    "prediction_id": prediction_id,
+                    "status": "notified"
+                })
+            except Exception as e:
+                conn.rollback()
+                failed.append({"customer_id": customer_id, "error": f"Failed to update feedback: {str(e)}"})
+            finally:
+                conn.close()
+                
+        except Exception as e:
+            failed.append({"customer_id": customer_id, "error": str(e)})
+    
+    return {
+        "message": f"Notified {len(notified)} customers, {len(failed)} failed",
+        "notified": notified,
+        "failed": failed
+    }
 
