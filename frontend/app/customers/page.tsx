@@ -14,41 +14,11 @@ export default async function Page() {
     { cache: "no-store" }
   );
 
-
   const rawCustomers = await res.json();
-  // console.log("Fetched customers:", rawCustomers);
-
-
+  
+  // Backend now returns objects directly, not arrays
   const customers = Array.isArray(rawCustomers.customers)
-    ? rawCustomers.customers.map((customer) => ({
-        id: customer[0],
-        gender: customer[1],
-        seniorCitizen: customer[2],
-        partner: customer[3],
-        dependents: customer[4],
-        tenure: customer[5],
-        phoneService: customer[6],
-        multipleLines: customer[7],
-        internetService: customer[8],
-        onlineSecurity: customer[9],
-        onlineBackup: customer[10],
-        deviceProtection: customer[11],
-        techSupport: customer[12],
-        streamingTV: customer[13],
-        streamingMovies: customer[14],
-        contract: customer[15],
-        paperlessBilling: customer[16],
-        paymentMethod: customer[17],
-        monthlyCharges: customer[18],
-        totalCharges: customer[19],
-        churn: customer[20],
-        status: customer[21],
-        notified: customer[22],
-        updated_at: customer[23],
-        first_name: customer[24],
-        last_name: customer[25],
-        email: customer[26],
-      }))
+    ? rawCustomers.customers
     : [];
 
   return (

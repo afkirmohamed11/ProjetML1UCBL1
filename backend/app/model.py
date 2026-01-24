@@ -4,7 +4,7 @@ from config import MODEL_PATH
 _model = None 
 
 def load_model():
-    print(MODEL_PATH)
+    # print(MODEL_PATH)
     global _model
     if _model is None:
         _model = joblib.load(MODEL_PATH)

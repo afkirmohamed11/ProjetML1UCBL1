@@ -5,12 +5,14 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import TableCellViewer from "@/components/TableCellViewer"
+import CustomerActions from "@/components/customer-actions"
 import type { PredictRecord } from "@/components/TableCellViewer"
 
 
-export default async function CustomerPage({ params }: { params: { id: string } }) {
+export default async function CustomerPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const res = await fetch(
-    `${process.env.API_INTERNAL_URL}/customers/${params.id}`,
+    `${process.env.API_INTERNAL_URL}/customers/${id}`,
     { cache: "no-store" }
   );
 
@@ -22,12 +24,13 @@ export default async function CustomerPage({ params }: { params: { id: string } 
 
   const source = payload?.customer ?? payload;
 
-  // Map either an object (column-named) or legacy array to PredictRecord
+  // Map backend response to PredictRecord
   const toRecord = (src: unknown): PredictRecord | null => {
       const o = src as Record<string, unknown>;
       const get = (k: string) => o[k];
       const bool = (v: unknown) => Boolean(v);
       const num = (v: unknown) => (typeof v === "number" ? v : Number(v ?? 0));
+      
       return {
         gender: String(get("gender") ?? "-").toLowerCase(),
         senior_citizen: bool(get("senior_citizen")),
@@ -48,13 +51,33 @@ export default async function CustomerPage({ params }: { params: { id: string } 
         payment_method: String(get("payment_method") ?? ""),
         monthly_charges: num(get("monthly_charges")),
         total_charges: num(get("total_charges")),
-        churned: typeof get("churn") === "boolean" ? (get("churn") as boolean) : false,
-        status: String(get("status") ?? ""),
-        notified: bool(get("notified")),
+        // Get churn from prediction if available, otherwise from customer table
+        churned: get("churn_prediction") !== null && get("churn_prediction") !== undefined 
+          ? bool(get("churn_prediction")) 
+          : bool(get("churn")),
+        // Build status from notified and feedback data
+        status: (() => {
+          const feedbackAnswer = get("feedback_answer");
+          const feedbackDate = get("feedback_date");
+          const notifiedDate = get("notified_date");
+          
+          if (feedbackDate && feedbackAnswer) {
+            return String(feedbackAnswer).toLowerCase() === "yes" ? "responded_ok" : "responded_no";
+          }
+          if (notifiedDate) {
+            return "notified";
+          }
+          return "not_notified";
+        })(),
+        notified: bool(get("notified_date")),
         first_name: String(get("first_name") ?? ""),
         last_name: String(get("last_name") ?? ""),
         email: String(get("email") ?? ""),
-        churn_probability: typeof get("churn") === "boolean" ? (get("churn") ? 1 : 0) : 0,
+        churn_probability: num(get("churn_probability")),
+        // Include notification and feedback dates
+        notified_date: get("notified_date") ? String(get("notified_date")) : undefined,
+        feedback_date: get("feedback_date") ? String(get("feedback_date")) : undefined,
+        feedback_answer: get("feedback_answer") ? String(get("feedback_answer")) : undefined,
       };
 
   };
@@ -76,10 +99,15 @@ export default async function CustomerPage({ params }: { params: { id: string } 
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title="Try Out The Model" />
-          <div className="w-full md:max-w-6xl">
-              <div className="rounded-xl border bg-background p-4">
-                <TableCellViewer data={mapped} />
+        <SiteHeader title="Customer Details" />
+          <div className="flex justify-center w-full px-4 lg:px-6">
+              <div className="w-full md:max-w-6xl space-y-4">
+                  <div className="rounded-xl border bg-background p-4">
+                    <TableCellViewer data={mapped} />
+                  </div>
+                  <div className="flex items-center justify-end gap-2 p-4">
+                    <CustomerActions customerId={id} />
+                  </div>
               </div>
           </div>
       </SidebarInset>

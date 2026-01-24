@@ -28,6 +28,9 @@ export type PredictRecord = {
   last_name: string;
   email: string;
   churn_probability: number;
+  notified_date?: string;
+  feedback_date?: string;
+  feedback_answer?: string;
 };
 
 type FieldType = "text" | "boolean" | "months" | "money" | "number";
@@ -53,6 +56,38 @@ function BooleanBadge({ value }: { value: boolean }) {
       }
     >
       {value ? "Yes" : "No"}
+    </span>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  let colorClasses = "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300";
+  let label = status;
+
+  switch (status) {
+    case "notified":
+      colorClasses = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300";
+      label = "Notified";
+      break;
+    case "not_notified":
+      colorClasses = "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300";
+      label = "Not Notified";
+      break;
+    case "responded_ok":
+      colorClasses = "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300";
+      label = "Responded OK";
+      break;
+    case "responded_no":
+      colorClasses = "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300";
+      label = "Responded No";
+      break;
+    default:
+      label = "Unknown";
+  }
+
+  return (
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${colorClasses}`}>
+      {label}
     </span>
   );
 }
@@ -195,6 +230,46 @@ export default function TableCellViewer({ data }: { data: PredictRecord }) {
             <Field label="Total Charges">
               <ValueCell value={data.total_charges} type="money" />
             </Field>
+          </dl>
+        </Section>
+
+        <Section title="Notification Status">
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Field label="Status">
+              <StatusBadge status={data.status} />
+            </Field>
+            <Field label="Notified">
+              {data.notified_date ? (
+                <div className="flex flex-col items-end">
+                  <span className="text-emerald-600 font-medium">Yes</span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(data.notified_date).toLocaleDateString()}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground">No</span>
+              )}
+            </Field>
+            {data.notified_date && (
+              <Field label="Feedback">
+                {data.feedback_date && data.feedback_answer ? (
+                  <div className="flex flex-col items-end">
+                    <span className={
+                      data.feedback_answer.toLowerCase() === "yes"
+                        ? "text-emerald-600 font-medium"
+                        : "text-amber-600 font-medium"
+                    }>
+                      {data.feedback_answer.toLowerCase() === "yes" ? "Responded OK" : "Responded No"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(data.feedback_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground">No response yet</span>
+                )}
+              </Field>
+            )}
           </dl>
         </Section>
       </div>

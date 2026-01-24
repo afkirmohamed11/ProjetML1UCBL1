@@ -36,25 +36,25 @@ services:
     networks:
       - prod_net
 
-  # n8n:
-  #   image: n8nio/n8n:latest
-  #   container_name: n8n
-  #   ports:
-  #     - "5678:5678"
-  #   env_file:
-  #     - ./.env
-  #   environment:
-  #     - TZ=Europe/Paris
-  #     - N8N_PUBLIC_BASE_URL=http://localhost:5678
-  #     - WEBHOOK_URL=http://localhost:5678
-  #     - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
-  #     - N8N_ENV_ALLOWLIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
-  #     - N8N_ENV_WHITELIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
-  #   volumes:
-  #     - n8n_data:/home/node/.n8n
-  #     - ./n8n/workflows:/workflows:ro
-  #   networks:
-  #     - prod_net
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    env_file:
+      - ./.env
+    environment:
+      - TZ=Europe/Paris
+      - N8N_PUBLIC_BASE_URL=http://localhost:5678
+      - WEBHOOK_URL=http://localhost:5678
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_ENV_ALLOWLIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
+      - N8N_ENV_WHITELIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/workflows:ro
+    networks:
+      - prod_net
 
 networks:
   prod_net:

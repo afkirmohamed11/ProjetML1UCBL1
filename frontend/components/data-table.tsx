@@ -28,10 +28,12 @@ import {
   IconChevronsRight,
   IconCircleCheckFilled,
   IconDotsVertical,
+  IconFilter,
   IconGripVertical,
   IconLayoutColumns,
   IconLoader,
   IconPlus,
+  IconRadar,
   IconTrendingUp,
 } from "@tabler/icons-react"
 import {
@@ -111,24 +113,26 @@ import { useRouter } from "next/navigation"
 
 
 export const schema = z.object({
-  id: z.number(),
-  // Support both legacy (header/type/…) and new (customer/contract/…) shapes
-  header: z.string().optional(),
-  customer: z.string().optional(),
+  customer_id: z.union([z.string(), z.number()]),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  email: z.string().optional(),
   contract: z.string().optional(),
-  payment_method: z.string().optional(),
-  gender: z.string().optional(),
-  type: z.string().optional(),
-  status: z.string().optional(),
-  target: z.string().optional(),
-  limit: z.string().optional(),
-  reviewer: z.string().optional(),
+  monthly_charges: z.number().optional(),
+  total_charges: z.number().optional(),
+  notified: z.boolean().optional(),
+  churn: z.boolean().optional(),
+  churn_label: z.boolean().optional(),
+  prediction_date: z.string().optional(),
+  notified_date: z.string().optional(),
+  feedback_date: z.string().optional(),
+  feedback_answer: z.string().optional(),
 })
 
 // Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
+function DragHandle({ id }: { id: string | number }) {
   const { attributes, listeners } = useSortable({
-    id,
+    id: String(id),
   })
 
   return (
@@ -149,9 +153,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
+    cell: ({ row }) => <DragHandle id={row.original.customer_id} />,
   },
-    {
+  {
     id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
@@ -174,122 +178,148 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "id",
-    header: "Customer ID",
+    accessorKey: "customer_id",
+    header: "ID",
     cell: ({ row }) => {
       const router = useRouter();
-
       const handleClick = () => {
-        router.push(`/customers/${row.original.id}`);
+        router.push(`/customers/${row.original.customer_id}`);
       };
-
       return (
         <Button variant="link" onClick={handleClick}>
-          {row.original.id}
+          {row.original.customer_id}
         </Button>
       );
     },
     enableHiding: false,
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => row.original.gender,
+    id: "name",
+    header: "Name",
+    cell: ({ row }) => {
+      const firstName = row.original.first_name || "";
+      const lastName = row.original.last_name || "";
+      return <span>{`${firstName} ${lastName}`.trim() || "-"}</span>;
+    },
     enableHiding: false,
   },
   {
-    accessorKey: "contract",
-    header: "Contract",
-    cell: ({ row }) => (row.original.contract ?? "-"),
-    enableHiding: false,
-  },
-  {
-    accessorKey: "paymentMethod",
-    header: "Payment Method",
-    cell: ({ row }) => (
-      <div className="w-40 truncate">{row.original.paymentMethod ?? "-"}</div>
-    ),
-    enableHiding: false,
-  },
-  {
-    accessorKey: "monthlyCharges",
+    accessorKey: "monthly_charges",
     header: "Monthly Charges",
-    cell: ({ row }) => `$${row.original.monthlyCharges?.toFixed(2) ?? "-"}`,
+    cell: ({ row }) => `$${row.original.monthly_charges?.toFixed(2) ?? "-"}`,
     enableHiding: false,
   },
   {
-    accessorKey: "totalCharges",
+    accessorKey: "total_charges",
     header: "Total Charges",
-    cell: ({ row }) => `$${row.original.totalCharges?.toFixed(2) ?? "-"}`,
+    cell: ({ row }) => `$${row.original.total_charges?.toFixed(2) ?? "-"}`,
     enableHiding: false,
   },
   {
-    accessorKey: "notified",
-    header: "Notified",
-    cell: ({ row }) => (row.original.notified ? "Yes" : "No"),
-    enableHiding: false,
-  },
-  {
-    accessorKey: "status",
+    id: "status",
+    accessorKey: "notified_date",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status;
-      let badgeVariant = "outline";
-      let badgeText = status;
-
-      switch (status) {
-        case "notified":
-          badgeVariant = "success";
-          badgeText = "Notified";
-          break;
-        case "not_notified":
-          badgeVariant = "destructive";
-          badgeText = "Not Notified";
-          break;
-        case "responded_ok":
-          badgeVariant = "success";
-          badgeText = "Responded OK";
-          break;
-        case "responded_no":
-          badgeVariant = "warning";
-          badgeText = "Responded No";
-          break;
-        default:
-          badgeVariant = "outline";
-          badgeText = "Unknown";
+      const date = row.original.notified_date;
+      if (!date) {
+        return (
+          <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-300">
+            Not Notified
+          </Badge>
+        );
       }
-
       return (
-        <Badge variant={badgeVariant} className="text-muted-foreground px-1.5">
-          {badgeText}
-        </Badge>
+        <div className="flex flex-col gap-1">
+          <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-300">
+            Notified
+          </Badge>
+          <span className="text-xs text-muted-foreground">{new Date(date).toLocaleDateString()}</span>
+        </div>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      const notifiedDate = row.original.notified_date;
+      const feedbackDate = row.original.feedback_date;
+      const feedbackAnswer = row.original.feedback_answer;
+      
+      if (filterValue === "not_notified") return !notifiedDate;
+      if (filterValue === "notified") return !!notifiedDate && !feedbackDate;
+      if (filterValue === "responded_ok") return !!feedbackDate && feedbackAnswer?.toLowerCase() === "yes";
+      if (filterValue === "responded_no") return !!feedbackDate && feedbackAnswer?.toLowerCase() !== "yes" && !!feedbackAnswer;
+      return true;
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "feedback_date",
+    header: "Feedback",
+    cell: ({ row }) => {
+      const date = row.original.feedback_date;
+      const answer = row.original.feedback_answer;
+      const notifiedDate = row.original.notified_date;
+      
+      // If not notified, show '-'
+      if (!notifiedDate) {
+        return <span className="text-muted-foreground">-</span>;
+      }
+      
+      // If notified but no feedback yet, show '-'
+      if (!date || !answer) {
+        return <span className="text-muted-foreground">-</span>;
+      }
+      
+      // If feedback received
+      const isPositive = answer.toLowerCase() === "yes";
+      return (
+        <div className="flex flex-col gap-1">
+          <Badge 
+            variant="outline" 
+            className={isPositive 
+              ? "bg-emerald-100 text-emerald-700 border-emerald-300" 
+              : "bg-amber-100 text-amber-700 border-amber-300"
+            }
+          >
+            {isPositive ? "Responded OK" : "Responded No"}
+          </Badge>
+          <span className="text-xs text-muted-foreground">{new Date(date).toLocaleDateString()}</span>
+        </div>
       );
     },
     enableHiding: false,
   },
   {
-    accessorKey: "churn",
+    accessorKey: "churn_label",
     header: "Churn",
-    cell: ({ row }) => (
-      <Badge
-        variant="outline"
-        className={
-          row.original.churn
-            ? "bg-red-50 text-red-600 border-red-200"
-            : "text-muted-foreground"
-        }
-      >
-        {row.original.churn ? "Yes" : "No"}
-      </Badge>
-
-    ),
+    cell: ({ row }) => {
+      const churn = row.original.churn_label;
+      const predictionDate = row.original.prediction_date;
+      
+      // If not predicted yet, show '-'
+      if (churn === null || churn === undefined || !predictionDate) {
+        return <span className="text-muted-foreground">-</span>;
+      }
+      
+      return (
+        <Badge
+          variant="outline"
+          className={
+            churn
+              ? "bg-red-50 text-red-600 border-red-200"
+              : "bg-green-50 text-green-600 border-green-200"
+          }
+        >
+          {churn ? "Yes" : "No"}
+        </Badge>
+      );
+    },
     enableHiding: false,
   },
 ]
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: String(row.original.customer_id),
   })
 
   return (
@@ -339,7 +369,7 @@ export function DataTable({
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map((item) => String(item.customer_id)) || [],
     [data]
   )
 
@@ -353,7 +383,7 @@ export function DataTable({
       columnFilters,
       pagination,
     },
-    getRowId: (row) => (row.id ? row.id.toString() : `row-${Math.random()}`),
+    getRowId: (row) => (row.customer_id ? String(row.customer_id) : `row-${Math.random()}`),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -411,6 +441,81 @@ export function DataTable({
     }
   }
 
+  async function handleNotifyCustomers() {
+    const selectedRows = table.getFilteredSelectedRowModel().rows
+    
+    if (selectedRows.length === 0) {
+      toast.error("Please select at least one customer to notify")
+      return
+    }
+
+    const customerIds = selectedRows.map(row => row.original.customer_id)
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const res = await fetch(`${baseUrl}/notify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ customer_ids: customerIds }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      toast.success(json?.message || `${selectedRows.length} customer(s) notified successfully!`)
+    } catch (err: any) {
+      toast.error(`Notification failed: ${err?.message || String(err)}`)
+    }
+  }
+
+  async function handlePredictChurn() {
+    const selectedRows = table.getFilteredSelectedRowModel().rows
+    
+    if (selectedRows.length === 0) {
+      toast.error("Please select at least one customer for prediction")
+      return
+    }
+
+    const customerIds = selectedRows.map(row => row.original.customer_id)
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const res = await fetch(`${baseUrl}/predict/batch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ customer_ids: customerIds }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(text || `HTTP ${res.status}`)
+      }
+
+      const json = await res.json()
+      const successCount = json?.predictions?.length || 0
+      const failCount = json?.failed?.length || 0
+      
+      if (successCount > 0) {
+        toast.success(json?.message || `Predictions completed for ${successCount} customer(s)!`)
+        // Refresh the page to show updated predictions
+        window.location.reload()
+      }
+      
+      if (failCount > 0) {
+        toast.warning(`${failCount} prediction(s) failed`)
+      }
+    } catch (err: any) {
+      toast.error(`Prediction failed: ${err?.message || String(err)}`)
+    }
+  }
+
   return (
     <Tabs
       defaultValue="outline"
@@ -419,6 +524,68 @@ export function DataTable({
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-base font-medium">All Customers</h2>
         <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <IconFilter className="h-4 w-4 mr-2" />
+                Status
+                <IconChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuCheckboxItem
+                checked={!table.getColumn("status")?.getFilterValue()}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue(undefined)}
+              >
+                All
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "notified"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("notified")}
+              >
+                Notified
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "not_notified"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("not_notified")}
+              >
+                Not Notified
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "responded_ok"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("responded_ok")}
+              >
+                Responded OK
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={table.getColumn("status")?.getFilterValue() === "responded_no"}
+                onCheckedChange={() => table.getColumn("status")?.setFilterValue("responded_no")}
+              >
+                Responded No
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <IconFilter className="h-4 w-4 mr-2" />
+                Actions
+                <IconChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleNotifyCustomers}>
+                <BellIcon className="h-4 w-4 mr-2" />
+                Notify Customers
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handlePredictChurn}>
+                <IconRadar className="h-4 w-4 mr-2" />
+                Predict Churn
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <input
             ref={fileInputRef}
             type="file"
@@ -441,10 +608,6 @@ export function DataTable({
               <PlusIcon className="h-5 w-5 mr-2" />
             )}
             New Customers
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => alert('Customers have been notified!')}>
-                <BellIcon className="h-5 w-5 mr-2" />
-                Notify Customers
           </Button>
         </div>
       </div>

@@ -17,15 +17,27 @@ from pathlib import Path
 import csv
 import io
 from typing import List, Dict
+import requests
+import time
 
-from config import K_RETRAIN
+from config import K_RETRAIN, MODEL_PATH
  
 
-# Dynamically add the ml_pipeline/src/pipeline/ directory to the Python path
+# Dynamically add the pipeline directory to Python path
+# For Docker: use the copied pipeline in app/pipeline
+# For local: use ml_pipeline/src/pipeline
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+APP_PIPELINE_DIR = Path(__file__).resolve().parent / "pipeline"
 ML_PIPELINE_SRC = BASE_DIR / "ml_pipeline" / "src" / "pipeline"
-if ML_PIPELINE_SRC not in sys.path:
-    sys.path.append(str(ML_PIPELINE_SRC))
+
+# Add app/pipeline first (for Docker), then ml_pipeline/src/pipeline (for local)
+if APP_PIPELINE_DIR.exists() and str(APP_PIPELINE_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_PIPELINE_DIR))
+    print(f"Added {APP_PIPELINE_DIR} to sys.path")
+
+if ML_PIPELINE_SRC.exists() and str(ML_PIPELINE_SRC) not in sys.path:
+    sys.path.insert(0, str(ML_PIPELINE_SRC))
+    print(f"Added {ML_PIPELINE_SRC} to sys.path")
 
 # FastAPI app initialization
 app = FastAPI(title="Telco Churn Prediction API")
@@ -118,6 +130,135 @@ def predict(payload: "PredictInput"):
         "churn_probability": float(proba),
         "prediction": pred
     }
+
+@app.post("/predict/batch")
+def predict_batch(payload: dict):
+    """
+    Predict churn for multiple customers.
+    Expects: { "customer_ids": [id1, id2, ...] }
+    Returns: { "message": "...", "predictions": [...], "failed": [...] }
+    """
+    customer_ids = payload.get("customer_ids", [])
+    if not customer_ids:
+        raise HTTPException(status_code=400, detail="customer_ids is required")
+    
+    predictions = []
+    failed = []
+    
+    for customer_id in customer_ids:
+        try:
+            # Fetch customer features
+            conn = get_db_connection()
+            try:
+                features = fetch_customer_features(conn, str(customer_id))
+            finally:
+                conn.close()
+            
+            if features is None:
+                failed.append({"customer_id": customer_id, "error": "Customer not found"})
+                continue
+            
+            # Make prediction
+            proba = predict_churn(features)
+            pred = 1 if proba >= 0.5 else 0
+            
+            # Insert into predictions table
+            conn = get_db_connection()
+            token = uuid4()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO predictions (customer_id, churn_score, churn_label, model_version, features_json, token)
+                        VALUES (%s, %s, %s, %s, %s::jsonb, %s)
+                        RETURNING prediction_id
+                        """,
+                        (
+                            str(customer_id), 
+                            float(proba), 
+                            bool(pred), 
+                            'v1', # MODEL_PATH.split("/")[-1],
+                            json.dumps(features),
+                            str(token)
+                         )
+                    )
+                    prediction_id = cur.fetchone()[0]
+                conn.commit()
+                
+                predictions.append({
+                    "customer_id": customer_id,
+                    "prediction_id": prediction_id,
+                    "churn_probability": float(proba),
+                    "churn_label": bool(pred)
+                })
+            except Exception as e:
+                conn.rollback()
+                failed.append({"customer_id": customer_id, "error": str(e)})
+            finally:
+                conn.close()
+                
+        except Exception as e:
+            failed.append({"customer_id": customer_id, "error": str(e)})
+    
+    return {
+        "message": f"Processed {len(predictions)} predictions, {len(failed)} failed",
+        "predictions": predictions,
+        "failed": failed
+    }
+
+@app.post("/predict/customer/{customer_id}")
+def predict_customer(customer_id: str):
+    """
+    Predict churn for a single customer by ID.
+    Returns: { "customer_id": "...", "prediction_id": ..., "churn_probability": ..., "churn_label": ... }
+    """
+    try:
+        # Fetch customer features
+        conn = get_db_connection()
+        try:
+            features = fetch_customer_features(conn, customer_id)
+        finally:
+            conn.close()
+        
+        if features is None:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        
+        # Make prediction
+        proba = predict_churn(features)
+        pred = 1 if proba >= 0.5 else 0
+        
+        # Insert into predictions table
+        conn = get_db_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO predictions (customer_id, churn_score, churn_label, model_version)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING prediction_id
+                    """,
+                    (customer_id, float(proba), bool(pred), "v1")
+                )
+                prediction_id = cur.fetchone()[0]
+            conn.commit()
+            
+            return {
+                "message": "Prediction completed successfully",
+                "customer_id": customer_id,
+                "prediction_id": prediction_id,
+                "churn_probability": float(proba),
+                "churn_label": bool(pred)
+            }
+        except Exception as e:
+            conn.rollback()
+            raise HTTPException(status_code=500, detail=f"Failed to save prediction: {e}")
+        finally:
+            conn.close()
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/model_info")
 def model_info():
@@ -438,4 +579,91 @@ def feedback(payload: FeedbackRequest, background: BackgroundTasks):
 @app.post("/retrain")
 def retrain(payload: RetrainRequest):
     return start_retrain(payload.reason)
+
+@app.post("/notify")
+def notify_customers(payload: dict):
+    """
+    Notify customers who have predictions via n8n webhook.
+    Expects: { "customer_ids": [id1, id2, ...] }
+    Returns: { "message": "...", "notified": [...], "failed": [...] }
+    """
+    customer_ids = payload.get("customer_ids", [])
+    if not customer_ids:
+        raise HTTPException(status_code=400, detail="customer_ids is required")
+    
+    print(f"[NOTIFY] Processing {len(customer_ids)} customers: {customer_ids}")
+    
+    notified = []
+    failed = []
+    
+    for customer_id in customer_ids:
+        print(f"[NOTIFY] Processing customer: {customer_id}")
+        try:
+            # Check if customer has a prediction
+            conn = get_db_connection()
+            prediction_row = None
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        SELECT prediction_id, churn_score, churn_label, token
+                        FROM predictions 
+                        WHERE customer_id = %s 
+                        ORDER BY created_at DESC 
+                        LIMIT 1
+                        """,
+                        (str(customer_id),)
+                    )
+                    prediction_row = cur.fetchone()
+            finally:
+                conn.close()
+            
+            if not prediction_row:
+                print(f"[NOTIFY] No prediction found for customer: {customer_id}")
+                failed.append({"customer_id": customer_id, "error": "No prediction found"})
+                continue
+            
+            prediction_id = prediction_row[0]
+            token = prediction_row[3]
+            print(f"[NOTIFY] Found prediction {prediction_id} with token {token} for customer {customer_id}")
+            
+            # Call n8n webhook to send notification
+            webhook_url = "http://n8n:5678/webhook/notify-churn"
+            webhook_payload = {
+                "customer_id": str(customer_id),
+                "token": str(token),
+            }
+            
+            print(f"[NOTIFY] Calling webhook for customer {customer_id}")
+            try:
+                response = requests.post(
+                    webhook_url,
+                    json=webhook_payload,
+                    timeout=30
+                )
+                response.raise_for_status()
+                print(f"[NOTIFY] Webhook success for customer {customer_id}: {response.status_code}")
+                notified.append({
+                    "customer_id": customer_id,
+                    "prediction_id": prediction_id,
+                    "status": "notified"
+                })
+                
+                # Wait 11 seconds before processing next customer
+                print(f"[NOTIFY] Waiting 11 seconds before next customer...")
+                time.sleep(11)
+                
+            except requests.exceptions.RequestException as e:
+                print(f"[NOTIFY] Webhook failed for customer {customer_id}: {str(e)}")
+                failed.append({"customer_id": customer_id, "error": f"Webhook failed: {str(e)}"})
+                
+        except Exception as e:
+            print(f"[NOTIFY] Exception for customer {customer_id}: {str(e)}")
+            failed.append({"customer_id": customer_id, "error": str(e)})
+    
+    return {
+        "message": f"Notified {len(notified)} customers, {len(failed)} failed",
+        "notified": notified,
+        "failed": failed
+    }
 
