@@ -81,6 +81,13 @@ ALTER TABLE predictions
   REFERENCES trained_models(model_version)
   ON UPDATE CASCADE
   ON DELETE RESTRICT;
+-- FK: customer -> prediction
+ALTER TABLE predictions
+  ADD CONSTRAINT predictions_customer_fk
+  FOREIGN KEY (customer_id)
+  REFERENCES public.customers(customer_id)
+  ON UPDATE CASCADE
+  ON DELETE CASCADE; 
 
 -- 3) feedback
 
