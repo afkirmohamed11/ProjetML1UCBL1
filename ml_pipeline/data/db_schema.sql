@@ -74,6 +74,15 @@ CREATE TABLE IF NOT EXISTS predictions (
     CHECK (churn_score >= 0 AND churn_score <= 1)
 );
 
+-- FK: predictions -> customers
+ALTER TABLE predictions
+  ADD CONSTRAINT predictions_customer_fk
+  FOREIGN KEY (customer_id)
+  REFERENCES customers(customer_id)
+  ON UPDATE CASCADE
+  ON DELETE RESTRICT;
+
+
 -- FK: predictions -> trained_models
 ALTER TABLE predictions
   ADD CONSTRAINT predictions_model_version_fk
