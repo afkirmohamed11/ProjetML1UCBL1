@@ -1,18 +1,71 @@
 from app.db_connection import get_db_connection
 
 def fetch_customers():
-    """Fetch customer data from the database."""
+    """Fetch customer data with their predictions and feedback status."""
+    from decimal import Decimal
+    
     connection = None
     try:
-        # Establish connection to the database
         connection = get_db_connection()
         cursor = connection.cursor()
         
-        # Execute query to fetch customers
-        print('Fetching customers from database...')
-        query = "SELECT * FROM customers;"
+        print('Fetching customers with predictions and feedback from database...')
+        
+        # Join customers with latest predictions and feedback - only essential fields
+        query = """
+            SELECT 
+                c.customer_id,
+                c.first_name,
+                c.last_name,
+                c.email,
+                c.contract,
+                c.monthly_charges,
+                c.total_charges,
+                p.churn_label,
+                p.created_at as prediction_date,
+                f.sent_at as notified_date,
+                f.answered_at as feedback_date,
+                f.answer as feedback_answer
+            FROM customers c
+            LEFT JOIN LATERAL (
+                SELECT churn_label, created_at
+                FROM predictions
+                WHERE customer_id = c.customer_id
+                ORDER BY created_at DESC
+                LIMIT 1
+            ) p ON true
+            LEFT JOIN LATERAL (
+                SELECT sent_at, answered_at, answer
+                FROM feedback
+                WHERE prediction_id IN (
+                    SELECT prediction_id 
+                    FROM predictions 
+                    WHERE customer_id = c.customer_id 
+                    ORDER BY created_at DESC 
+                    LIMIT 1
+                )
+                ORDER BY answered_at DESC
+                LIMIT 1
+            ) f ON true
+            ORDER BY c.customer_id;
+        """
         cursor.execute(query)
-        customers = cursor.fetchall()
+        rows = cursor.fetchall()
+        
+        # Get column names
+        columns = [desc[0] for desc in cursor.description]
+        
+        # Convert rows to list of dicts
+        customers = []
+        for row in rows:
+            data = dict(zip(columns, row))
+            
+            # Convert Decimal to float for JSON serialization
+            for k, v in list(data.items()):
+                if isinstance(v, Decimal):
+                    data[k] = float(v)
+            
+            customers.append(data)
 
         return customers
 
@@ -21,7 +74,6 @@ def fetch_customers():
         raise
 
     finally:
-        # Close the connection
         if connection:
             cursor.close()
             connection.close()
@@ -60,13 +112,22 @@ def fetch_customer_by_id(customer_id: str):
             if isinstance(v, Decimal):
                 data[k] = float(v)
 
-        # Fetch latest prediction for this customer
+        # Fetch latest prediction and feedback for this customer
         cursor.execute(
             """
-            SELECT churn_score, churn_label, created_at 
-            FROM predictions 
-            WHERE customer_id = %s 
-            ORDER BY created_at DESC 
+            SELECT 
+                p.prediction_id,
+                p.churn_score, 
+                p.churn_label, 
+                p.created_at,
+                f.feedback_id,
+                f.answer,
+                f.used_for_training,
+                f.answered_at
+            FROM predictions p
+            LEFT JOIN feedback f ON f.prediction_id = p.prediction_id
+            WHERE p.customer_id = %s 
+            ORDER BY p.created_at DESC 
             LIMIT 1
             """,
             (customer_id,)
@@ -74,13 +135,23 @@ def fetch_customer_by_id(customer_id: str):
         prediction_row = cursor.fetchone()
         
         if prediction_row:
-            data['churn_probability'] = float(prediction_row[0])
-            data['churn_prediction'] = prediction_row[1]
-            data['prediction_date'] = prediction_row[2].isoformat() if prediction_row[2] else None
+            data['prediction_id'] = prediction_row[0]
+            data['churn_probability'] = float(prediction_row[1]) if prediction_row[1] else 0.0
+            data['churn_prediction'] = prediction_row[2]
+            data['prediction_date'] = prediction_row[3].isoformat() if prediction_row[3] else None
+            data['feedback_id'] = prediction_row[4]
+            data['feedback_answer'] = prediction_row[5]
+            data['used_for_training'] = prediction_row[6]
+            data['feedback_date'] = prediction_row[7].isoformat() if prediction_row[7] else None
         else:
+            data['prediction_id'] = None
             data['churn_probability'] = 0.0
             data['churn_prediction'] = False
             data['prediction_date'] = None
+            data['feedback_id'] = None
+            data['feedback_answer'] = None
+            data['used_for_training'] = None
+            data['feedback_date'] = None
 
         return data
 

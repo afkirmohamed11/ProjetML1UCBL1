@@ -28,6 +28,9 @@ export type PredictRecord = {
   last_name: string;
   email: string;
   churn_probability: number;
+  notified_date?: string;
+  feedback_date?: string;
+  feedback_answer?: string;
 };
 
 type FieldType = "text" | "boolean" | "months" | "money" | "number";
@@ -236,8 +239,37 @@ export default function TableCellViewer({ data }: { data: PredictRecord }) {
               <StatusBadge status={data.status} />
             </Field>
             <Field label="Notified">
-              <ValueCell value={data.notified} type="boolean" />
+              {data.notified_date ? (
+                <div className="flex flex-col items-end">
+                  <span className="text-emerald-600 font-medium">Yes</span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(data.notified_date).toLocaleDateString()}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground">No</span>
+              )}
             </Field>
+            {data.notified_date && (
+              <Field label="Feedback">
+                {data.feedback_date && data.feedback_answer ? (
+                  <div className="flex flex-col items-end">
+                    <span className={
+                      data.feedback_answer.toLowerCase() === "yes"
+                        ? "text-emerald-600 font-medium"
+                        : "text-amber-600 font-medium"
+                    }>
+                      {data.feedback_answer.toLowerCase() === "yes" ? "Responded OK" : "Responded No"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(data.feedback_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground">No response yet</span>
+                )}
+              </Field>
+            )}
           </dl>
         </Section>
       </div>
