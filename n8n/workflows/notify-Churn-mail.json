@@ -10,28 +10,30 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -480,
-        -80
+        0,
+        0
       ],
-      "id": "067e5b88-c2e9-4233-af79-bdecafac6b49",
-      "name": "Webhook"
+      "id": "97302cd1-fcd4-4709-afd3-85cae14228fb",
+      "name": "Webhook",
+      "webhookId": "5cc9a539-cce4-4f3f-aa78-9c6da3b29942"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  email,\n  gender,\n  senior_citizen,\n  partner,\n  dependents,\n  tenure,\n  contract,\n  internet_service,\n  monthly_charges\nFROM new_customers\nWHERE customer_id = '{{$node[\"Webhook\"].json[\"body\"][\"customer_id\"]}}';\n",
+        "query": "SELECT\n  email,\n  gender,\n  senior_citizen,\n  partner,\n  dependents,\n  tenure,\n  contract,\n  internet_service,\n  monthly_charges\nFROM customers\nWHERE customer_id = '{{$node[\"Webhook\"].json[\"body\"][\"customer_id\"]}}';\n",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -304,
-        -80
+        176,
+        0
       ],
-      "id": "ae83a313-ae8a-4014-898b-0f0ed6501a24",
+      "id": "0fcc7563-88cd-46f5-829d-06b9b19de349",
       "name": "Execute a SQL query",
       "credentials": {
         "postgres": {
+          "id": "229PkfsElxbYVISN",
           "name": "Postgres account"
         }
       }
@@ -41,27 +43,9 @@
         "assignments": {
           "assignments": [
             {
-              "id": "7990d596-4761-4aec-923a-9718094149d4",
-              "name": "token",
-              "value": "={{$node[\"Webhook\"].json.body.token}}",
-              "type": "string"
-            },
-            {
               "id": "42c380c2-aad3-4139-ab75-8b78e6283630",
               "name": "customer_id",
               "value": "={{$node[\"Webhook\"].json[\"body\"][\"customer_id\"]}}\n",
-              "type": "string"
-            },
-            {
-              "id": "d12286ed-834e-4130-9eb0-d666718b1d29",
-              "name": "churn_probability",
-              "value": "={{$node[\"Webhook\"].json[\"body\"][\"churn_probability\"]}}",
-              "type": "string"
-            },
-            {
-              "id": "5daa8b53-f5a5-47b3-a5e9-f7798c23e6e7",
-              "name": "prediction",
-              "value": "={{$node[\"Webhook\"].json[\"body\"][\"prediction\"]}}\n",
               "type": "string"
             },
             {
@@ -75,6 +59,12 @@
               "name": "llm_context",
               "value": "={{\"Client \" + $node[\"Webhook\"].json[\"body\"][\"customer_id\"] +\", tenure=\" + $node[\"Execute a SQL query\"].json[\"tenure\"] +\", contrat=\" + $node[\"Execute a SQL query\"].json[\"contract\"] +\", internet=\" + $node[\"Execute a SQL query\"].json[\"internet_service\"] +\", charges=\" + $node[\"Execute a SQL query\"].json[\"monthly_charges\"]}}",
               "type": "string"
+            },
+            {
+              "id": "a91dbfb0-6628-40ca-8954-dcdec0874008",
+              "name": "token",
+              "value": "={{$node[\"Webhook\"].json[\"body\"][\"token\"]}}",
+              "type": "string"
             }
           ]
         },
@@ -83,10 +73,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -160,
-        -80
+        320,
+        0
       ],
-      "id": "0ad9be76-15d1-434b-b183-9725de99bd82",
+      "id": "1bd4e5b2-6929-43bf-ac2f-5e56dd8104a6",
       "name": "Prepare LLM"
     },
     {
@@ -110,13 +100,14 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        16,
-        -80
+        496,
+        0
       ],
-      "id": "61ca40f2-4ed9-4499-9445-39f8617cb94d",
+      "id": "248c2a5d-018c-4c01-8557-3b89f9f0cad3",
       "name": "Message a model",
       "credentials": {
         "openAiApi": {
+          "id": "YMoCq9D8WHRbttTI",
           "name": "OpenAi account"
         }
       }
@@ -150,10 +141,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        288,
-        -80
+        768,
+        0
       ],
-      "id": "84274059-4cb4-4c8a-920d-2b13e0119501",
+      "id": "e960090b-8b2e-4fe6-8e2e-709562d328ac",
       "name": "Build Links"
     },
     {
@@ -167,14 +158,165 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        496,
-        -80
+        976,
+        0
       ],
-      "id": "7722543d-c5bc-4e3e-aade-9014ad277680",
+      "id": "6e4fb709-cf37-47ff-8025-334b5effe693",
       "name": "Send email",
+      "webhookId": "77e44c51-25d6-41aa-8c6c-a1e4ace5934e",
       "credentials": {
         "smtp": {
+          "id": "TjwdhjURCgH7GHMA",
           "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "feedback",
+          "mode": "list",
+          "cachedResultName": "feedback"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "prediction_id": "={{ +$node[\"getPrediction_id\"].json[\"prediction_id\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "feedback_id",
+              "displayName": "feedback_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "prediction_id",
+              "displayName": "prediction_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "answer",
+              "displayName": "answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "feedback_label",
+              "displayName": "feedback_label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_for_training",
+              "displayName": "used_for_training",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "answered_at",
+              "displayName": "answered_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1392,
+        0
+      ],
+      "id": "a70af06b-9301-4684-8891-66c50c60db6a",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "229PkfsElxbYVISN",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "predictions",
+          "mode": "list",
+          "cachedResultName": "predictions"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "token",
+              "value": "={{$node[\"Webhook\"].json[\"body\"][\"token\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "d1ca3e08-57b1-46e7-a5d0-4e7e595d8629",
+      "name": "getPrediction_id",
+      "credentials": {
+        "postgres": {
+          "id": "229PkfsElxbYVISN",
+          "name": "Postgres account"
         }
       }
     }
@@ -235,17 +377,40 @@
           }
         ]
       ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "getPrediction_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getPrediction_id": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "e7509fe7-9511-42aa-bb50-3efb3f8baea9",
+  "versionId": "a92192c2-a6fb-44be-be33-d9c5fb1433af",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "5a9538f8ffbe852327a948556459e21d13ebd2575901573862ea86b50efdaa5a"
+    "instanceId": "63407ebe46cae651faf25ced893bdf39bdd20a1ede7f57c5bb6a55fd71ac0b00"
   },
+  "id": "ZORwubpby15X36mp",
   "tags": []
-} 
+}
