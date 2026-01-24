@@ -145,11 +145,10 @@ Configuration :
 
 ```json
 {
-  "token": "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11",
-  "customer_id": "7590-VHVEG",
-  "churn_probability": 0.81,
-  "prediction": 1
+  "token" = "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11"
+  "customer_id" = "7590-VHVEG"
 }
+
 ```
 
 > `prediction`: 1 = churn, 0 = non churn (à adapter selon ton workflow).
@@ -160,8 +159,6 @@ Configuration :
 $body = @{
   token = "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11"
   customer_id = "7590-VHVEG"
-  churn_probability = 0.81
-  prediction = 1
 } | ConvertTo-Json
 
 Invoke-RestMethod `
@@ -179,8 +176,6 @@ curl -X POST "http://localhost:5678/webhook-test/notify-churn" \
   -d '{
     "token": "7b9d6c7e-1d0c-4c2e-9f1c-2a4e3a9e8f11",
     "customer_id": "7590-VHVEG",
-    "churn_probability": 0.81,
-    "prediction": 1
   }'
 ```
 ## Nettoyage – Supprimer un feedback de test (PostgreSQL)
