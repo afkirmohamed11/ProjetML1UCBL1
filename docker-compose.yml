@@ -1,6 +1,9 @@
 version: "3.8"
 
 services:
+  # ==========================================
+  # APPLICATION SERVICES
+  # ==========================================
   serving-api:
     build:
       context: ./backend
@@ -11,7 +14,8 @@ services:
     env_file:
       - ./backend/.env
     networks:
-      - prod_net
+      - app_net          
+      
 
   frontend:
     build:
@@ -21,28 +25,63 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - prod_net
+      - app_net         
 
-  # n8n:
-  #   image: n8nio/n8n:latest
-  #   container_name: n8n
-  #   ports:
-  #     - "5678:5678"
-  #   volumes:
-  #     - n8n_data:/home/node/.n8n
-  #   environment:
-  #     - TZ=Europe/Paris
-  #     # Pour que les liens des webhooks soient corrects (tests en local)
-  #     - N8N_PUBLIC_BASE_URL=http://localhost:5678
-  #     - WEBHOOK_URL=http://localhost:5678
-  #     # Recommandé (sinon n8n peut warning)
-  #     - N8N_ENCRYPTION_KEY=change_this_key_please
-  #   networks:
-  #     - prod_net
+  # ==========================================
+  # MONITORING SERVICES
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./reporting/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring_net
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000" 
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./reporting/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - monitoring_net
+    depends_on:
+      - prometheus
+
+  evidently-exporter:
+    build:
+      context: ./reporting
+      dockerfile: Dockerfile
+    container_name: evidently-exporter
+    ports:
+      - "8020:8020"
+
+    networks:
+      - monitoring_net
+
+# ==========================================
+# DÉFINITION DES RÉSEAUX
+# ==========================================
 networks:
-  prod_net:
+  app_net:
+    driver: bridge
+  monitoring_net:
     driver: bridge
 
 volumes:
+  prometheus-data:
+  grafana-data:
   n8n_data:

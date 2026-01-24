@@ -39,14 +39,6 @@ services:
     container_name: evidently-exporter
     ports:
       - "8020:8020"
-      - "8000:8000"
-    volumes:
-      - ./artifacts:/app/artifacts
-      - ./workspace:/app/workspace
-      - ./customer_ref.csv:/app/customer_ref.csv
-      - ./customer_prod.csv:/app/customer_prod.csv
-    command: 
-      - "evidently ui"
    
     networks:
       - monitoring
