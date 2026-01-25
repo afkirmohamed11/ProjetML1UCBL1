@@ -20,7 +20,7 @@ from typing import List, Dict
 import requests
 import time
 
-from config import K_RETRAIN, MODEL_PATH
+from config import K_RETRAIN, MODEL_PATH, N8N_URL, FRONTEND_URL
  
 
 # Dynamically add the pipeline directory to Python path
@@ -44,7 +44,7 @@ app = FastAPI(title="Telco Churn Prediction API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
+    allow_origins=[FRONTEND_URL, "http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -752,7 +752,7 @@ def notify_customers(payload: dict):
             print(f"[NOTIFY] Found prediction {prediction_id} with token {token} for customer {customer_id}")
             
             # Call n8n webhook to send notification
-            webhook_url = "http://n8n:5678/webhook/notify-churn"
+            webhook_url = f"{N8N_URL}/webhook/notify-churn"
             webhook_payload = {
                 "customer_id": str(customer_id),
                 "token": str(token),

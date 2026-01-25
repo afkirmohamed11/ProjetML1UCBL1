@@ -17,3 +17,5 @@ data/
 
 reporting/workspace/
 reporting/notebook.ipynb
+
+k8s/secrets.yaml

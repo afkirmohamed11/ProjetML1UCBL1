@@ -39,14 +39,8 @@ const data = {
     },
     {
       title: "Workflows",
-      url: "http://localhost:5678",
+      url: process.env.NEXT_PUBLIC_N8N_URL || "http://68.183.255.194:5678",
       icon: IconListDetails,
-      external: true,
-    },
-    {
-      title: "Model Tracking",
-      url: "http://localhost:3000",
-      icon: IconSettings,
       external: true,
     },
     // {

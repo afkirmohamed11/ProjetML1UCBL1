@@ -6,6 +6,13 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+# Set build-time environment variables for Next.js
+ARG NEXT_PUBLIC_API_URL=http://159.65.211.36:8080
+ARG NEXT_PUBLIC_N8N_URL=http://68.183.255.194:5678
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_N8N_URL=$NEXT_PUBLIC_N8N_URL
+
 RUN npm run build
 
 FROM node:20-alpine AS runner
