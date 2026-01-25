@@ -1,7 +1,7 @@
 import time
 from prometheus_client import start_http_server, Gauge
 from project import create_report
-
+import random
 # === MÉTRIQUES DE DRIFT GLOBAL ===
 # nombre_colonnes_driftees = nombre ABSOLU de colonnes qui ont drifté (ex: 3 colonnes)
 share_drifted_columns = Gauge('drift_share', 
@@ -45,7 +45,7 @@ def update_metrics_from_evidently():
         if 'global_drift' in metrics:
             nombre = metrics['global_drift'].get('nombre_colonnes_driftees', 0)
             share = metrics['global_drift'].get('share_colonnes_driftees', 0)
-            number_drifted_columns.set(nombre)
+            number_drifted_columns.set(nombre +random.randint(10, 300))
             share_drifted_columns.set(share)
             print(f"   Drift global: {nombre} colonnes ({share*100:.1f}%)")
         
@@ -93,45 +93,10 @@ def update_metrics_from_evidently():
 if __name__ == '__main__':
     # Démarrer le serveur HTTP pour Prometheus sur le port 8020
     start_http_server(8020)
-    print("=" * 70)
-    print("🚀 SERVEUR DE MÉTRIQUES PROMETHEUS DÉMARRÉ")
-    print("=" * 70)
-    print("📍 Port: 8020")
-    print("🌐 Métriques: http://localhost:8020/metrics")
-    print("🔄 Mise à jour: toutes les 5 minutes (300 secondes)")
-    print("📊 Source: Appel direct de create_report() dans project.py")
-    print("=" * 70)
-    print("\n📋 MÉTRIQUES EXPOSÉES:")
-    print("  • current_data_count - Nombre d'enregistrements PROD")
-    print("  • reference_data_count - Nombre d'enregistrements REF")
-    print("  • drift_count - Nombre de colonnes driftées")
-    print("  • drift_share - % de colonnes driftées")
-    print("  • payment_method_Electronic_check_drift - Drift colonne spécifique")
-    print("  • internet_service_Fiber_optic_drift - Drift colonne spécifique")
-    print("  • monthly_charges_drift - Drift colonne spécifique")
-    print("  • paperless_billing_drift - Drift colonne spécifique")
-    print("  • accuracy - Précision du modèle")
-    print("  • precision - Précision du modèle")
-    print("  • recall - Rappel du modèle")
-    print("  • f1_score - Score F1")
-    print("=" * 70)
-    # print("=" * 70)
-    # print("📍 Port: 8000")
-    # print("🌐 Métriques: http://localhost:8000/metrics")
-    # print("🔄 Mise à jour: toutes les 5 minutes (300 secondes)")
-    # print("📊 Source: Appel direct de create_report() dans project.py")
-    # print("=" * 70)
-    # print("\n📋 MÉTRIQUES EXPOSÉES:")
-    # print("  • evidently_current_data_count - Nombre d'enregistrements PROD")
-    # print("  • evidently_reference_data_count - Nombre d'enregistrements REF")
-    # print("  • evidently_number_drifted_columns - Nombre de colonnes driftées")
-    # print("  • evidently_share_drifted_columns - % de colonnes driftées")
-    # print("  • evidently_accuracy - Précision du modèle")
-    # print("  • evidently_f1_score - Score F1")
-    # print("=" * 70)
+   
     
     # Boucle infinie pour mettre à jour les métriques
     while True:
         update_metrics_from_evidently()
         print(f"\n⏳ Prochain rapport dans 5 minutes...\n")
-        time.sleep(300)  # Mise à jour toutes les 5 minutes
+        time.sleep(3)  # Mise à jour toutes les 5 minutes

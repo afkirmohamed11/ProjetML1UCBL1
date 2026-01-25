@@ -16,3 +16,4 @@ evidently==0.7.18
 # Prometheus Metrics Export
 prometheus-client==0.19.0
 
+mlflow==3.8.1
