@@ -4,28 +4,28 @@ services:
   # ==========================================
   # APPLICATION SERVICES
   # ==========================================
-  serving-api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: serving-api
-    ports:
-      - "8080:8080"
-    env_file:
-      - ./backend/.env
-    networks:
-      - prod_net          
+  # serving-api:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: serving-api
+  #   ports:
+  #     - "8080:8080"
+  #   env_file:
+  #     - ./backend/.env
+  #   networks:
+  #     - prod_net          
       
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    ports:
-      - "3000:3000"
-    networks:
-      - prod_net     
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: frontend
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - prod_net     
 
 
     # n8n:
@@ -66,7 +66,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3001:3000" 
+      - "3000:3000" 
     volumes:
       - grafana-data:/var/lib/grafana
       - ./reporting/grafana/provisioning:/etc/grafana/provisioning

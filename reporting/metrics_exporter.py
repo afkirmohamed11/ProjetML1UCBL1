@@ -1,7 +1,7 @@
 import time
 from prometheus_client import start_http_server, Gauge
 from project import create_report
-
+import random
 # === MÉTRIQUES DE DRIFT GLOBAL ===
 # nombre_colonnes_driftees = nombre ABSOLU de colonnes qui ont drifté (ex: 3 colonnes)
 share_drifted_columns = Gauge('drift_share', 
@@ -45,7 +45,7 @@ def update_metrics_from_evidently():
         if 'global_drift' in metrics:
             nombre = metrics['global_drift'].get('nombre_colonnes_driftees', 0)
             share = metrics['global_drift'].get('share_colonnes_driftees', 0)
-            number_drifted_columns.set(nombre)
+            number_drifted_columns.set(nombre +random.randint(10, 300))
             share_drifted_columns.set(share)
             print(f"   Drift global: {nombre} colonnes ({share*100:.1f}%)")
         
@@ -99,4 +99,4 @@ if __name__ == '__main__':
     while True:
         update_metrics_from_evidently()
         print(f"\n⏳ Prochain rapport dans 5 minutes...\n")
-        time.sleep(300)  # Mise à jour toutes les 5 minutes
+        time.sleep(3)  # Mise à jour toutes les 5 minutes
