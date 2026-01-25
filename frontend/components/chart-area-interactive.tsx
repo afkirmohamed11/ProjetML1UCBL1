@@ -59,7 +59,8 @@ export function ChartAreaInteractive() {
   React.useEffect(() => {
     async function fetchChurnData() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/churn-over-time`)
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+        const res = await fetch(`${baseUrl}/dashboard/churn-over-time`)
         if (res.ok) {
           const json = await res.json()
           const data = json.data ?? json

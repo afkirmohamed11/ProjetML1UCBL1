@@ -8,7 +8,7 @@ import { toast } from "sonner"
 export default function CustomerActions({ customerId }: { customerId: string }) {
   async function handleNotifyCustomer() {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/notify`, {
         method: "POST",
         headers: {
@@ -31,7 +31,7 @@ export default function CustomerActions({ customerId }: { customerId: string }) 
 
   async function handlePredictChurn() {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/predict/customer/${customerId}`, {
         method: "POST",
         headers: {

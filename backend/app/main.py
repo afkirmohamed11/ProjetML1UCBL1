@@ -44,7 +44,7 @@ app = FastAPI(title="Telco Churn Prediction API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -790,4 +790,33 @@ def notify_customers(payload: dict):
         "notified": notified,
         "failed": failed
     }
+
+
+@app.post("/chatbot/query")
+async def chatbot_query(query: dict):
+    """
+    Proxy endpoint for chatbot queries to AWS Lambda.
+    Forwards the question to the Lambda function and returns the answer.
+    """
+    try:
+        lambda_url = "https://mrvsjty45aj4nyk7q257wi236m0nrgfc.lambda-url.eu-west-3.on.aws/chat"
+        response = requests.post(
+            lambda_url,
+            json={"question": query.get("question", "")},
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        
+        if response.ok:
+            return response.json()
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Lambda returned error: {response.text}"
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to connect to chatbot service: {str(e)}"
+        )
 

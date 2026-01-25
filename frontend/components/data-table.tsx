@@ -395,7 +395,7 @@ export function DataTable({
       const form = new FormData()
       form.append("file", file)
 
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/customers/upload_csv`, {
         method: "POST",
         body: form,
@@ -432,7 +432,7 @@ export function DataTable({
     const customerIds = selectedRows.map(row => row.original.customer_id)
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/notify`, {
         method: "POST",
         headers: {
@@ -464,7 +464,7 @@ export function DataTable({
     const customerIds = selectedRows.map(row => row.original.customer_id)
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/predict/batch`, {
         method: "POST",
         headers: {

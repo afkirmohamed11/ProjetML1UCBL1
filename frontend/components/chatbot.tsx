@@ -63,7 +63,7 @@ export function ChatbotButton() {
     setIsLoading(true)
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
       const res = await fetch(`${baseUrl}/chatbot/query`, {
         method: "POST",
         headers: {
