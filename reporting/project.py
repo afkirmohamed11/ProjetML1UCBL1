@@ -56,7 +56,7 @@ def extract_metrics_from_report(my_eval, customer_prod, customer_ref):
         "nombre_colonnes": len(customer_prod.columns)
     }
     
-    print("✓ Métriques extraites du rapport Evidently")
+    print("Métriques extraites du rapport Evidently")
     return results
 
 
@@ -96,7 +96,7 @@ def create_report():
     
     # Ajout du run au workspace
     ws.add_run(project.id, my_eval, include_data=False)
-    print("✓ Nouveau rapport généré avec succès.")
+    print("Nouveau rapport généré avec succès.")
     
     # Extraire et sauvegarder les métriques pour Prometheus
     metrics = extract_metrics_from_report(my_eval, customer_prod, customer_ref)

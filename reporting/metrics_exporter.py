@@ -40,14 +40,15 @@ def update_metrics_from_evidently():
     try:
         print("\n Génération d'un nouveau rapport Evidently...")
         metrics = create_report()
-        
+        evaluation_metrics = {}  
         # Mettre à jour le drift global
         if 'global_drift' in metrics:
             nombre = metrics['global_drift'].get('nombre_colonnes_driftees', 0)
             share = metrics['global_drift'].get('share_colonnes_driftees', 0)
-            number_drifted_columns.set(nombre +random.randint(10, 300))
+            number_drifted_columns.set(nombre)
             share_drifted_columns.set(share)
-            print(f"   Drift global: {nombre} colonnes ({share*100:.1f}%)")
+            evaluation_metrics['share_drifted_columns'] = share
+            print(f"Drift global: {nombre} colonnes ({share*100:.1f}%)")
         
         # Mettre à jour les drifts par colonne
         if 'drift_scores' in metrics:
@@ -56,6 +57,11 @@ def update_metrics_from_evidently():
             drift_internet_fiber.set(drift_scores.get('internet_service_Fiber_optic', 0))
             drift_monthly_charges.set(drift_scores.get('monthly_charges', 0))
             drift_paperless_billing.set(drift_scores.get('paperless_billing', 0))
+
+            evaluation_metrics[' drift_payment_electronic'] =drift_scores.get('payment_method_Electronic_check', 0)
+            evaluation_metrics[' drift_internet_fiber'] =drift_scores.get('internet_service_Fiber_optic', 0)
+            evaluation_metrics[' drift_monthly_charges'] =drift_scores.get('monthly_charges', 0)
+            evaluation_metrics[' drift_paperless_billing'] =drift_scores.get('paperless_billing', 0)
             print(f"   {len(drift_scores)} drifts de colonnes spécifiques extraits")
         
         # Mettre à jour les métriques de classification
@@ -67,6 +73,9 @@ def update_metrics_from_evidently():
             f1_score_gauge.set(classification.get('f1_score', 0))
             print(f"   Accuracy: {classification.get('accuracy', 0):.4f}")
             print(f"   F1 Score: {classification.get('f1_score', 0):.4f}")
+           
+            #### metrics d'evaluation
+            evaluation_metrics['recall'] = classification.get('recall', 0)
         
         # Mettre à jour les informations sur les données
         if 'data_info' in metrics:
@@ -74,17 +83,20 @@ def update_metrics_from_evidently():
             nb_current = data_info.get('nombre_enregistrements_current', 0)
             nb_ref = data_info.get('nombre_enregistrements_reference', 0)
             nb_cols = data_info.get('nombre_colonnes', 0)
-            
+
             current_data_count.set(nb_current)
             reference_data_count.set(nb_ref)
             columns_count.set(nb_cols)
+
+            #### metrics d'evaluation
+            evaluation_metrics['nb_current'] = nb_current
             
             print(f"   Données PROD (current): {nb_current} enregistrements")
             print(f"   Données REF: {nb_ref} enregistrements")
             print(f"   {nb_cols} colonnes au total")
         
         print("\n Métriques Prometheus mises à jour avec succès!")
-        
+        return evaluation_metrics
     except Exception as e:
         print(f"\n Erreur lors de la mise à jour des métriques: {e}")
         import traceback
@@ -97,6 +109,23 @@ if __name__ == '__main__':
     
     # Boucle infinie pour mettre à jour les métriques
     while True:
-        update_metrics_from_evidently()
-        print(f"\n⏳ Prochain rapport dans 5 minutes...\n")
+        evaluation_metrics = update_metrics_from_evidently()
+        
+        rec_count =evaluation_metrics.get('nb_current', 0)
+        recall = evaluation_metrics.get('recall', 0)
+        share_drifted_columns = evaluation_metrics.get('share_drifted_columns', 0)  
+        payment_method_Electronic_check  = evaluation_metrics.get('payment_method_Electronic_check', 0)
+        internet_service_Fiber_optic =  evaluation_metrics.get('internet_service_Fiber_optic', 0)
+        monthly_charges = evaluation_metrics.get('monthly_charges', 0)
+        paperless_billing = evaluation_metrics.get('paperless_billing', 0)
+
+        if rec_count >=200  and (recall < 0.8 or share_drifted_columns > 0.5     or
+           payment_method_Electronic_check >0.3 or internet_service_Fiber_optic >0.3 or 
+           internet_service_Fiber_optic >0.3 or paperless_billing >0.3):
+            
+            
+            print("ALERTE: Le recall est inférieur à 0.6 sur plus de 1000 enregistrements!")
+        
+        
+
         time.sleep(3)  # Mise à jour toutes les 5 minutes

@@ -3,6 +3,9 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from imblearn.pipeline import Pipeline as ImbPipeline
+from imblearn.over_sampling import SMOTE
 
 from preprocess import (
     drop_duplicates,
@@ -58,3 +61,8 @@ def build_pipeline():
         ("preprocess", PreprocessingTransformer()),
         ("model", model)
     ])
+
+
+
+
+
