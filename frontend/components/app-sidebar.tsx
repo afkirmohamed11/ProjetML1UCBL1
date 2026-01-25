@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Model Tracking",
-      url: "http://localhost:TODO",
+      url: "http://localhost:3000",
       icon: IconSettings,
       external: true,
     },
