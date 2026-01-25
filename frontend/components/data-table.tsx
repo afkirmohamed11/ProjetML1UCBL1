@@ -782,67 +782,10 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
         <DrawerHeader className="gap-1">
           <DrawerTitle>{item.customer ?? item.header ?? "Details"}</DrawerTitle>
           <DrawerDescription>
-            Showing total visitors for the last 6 months
+            Chat here
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          {!isMobile && (
-            <>
-              <ChartContainer config={chartConfig}>
-                <AreaChart
-                  accessibilityLayer
-                  data={chartData}
-                  margin={{
-                    left: 0,
-                    right: 10,
-                  }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                    hide
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dot" />}
-                  />
-                  <Area
-                    dataKey="mobile"
-                    type="natural"
-                    fill="var(--color-mobile)"
-                    fillOpacity={0.6}
-                    stroke="var(--color-mobile)"
-                    stackId="a"
-                  />
-                  <Area
-                    dataKey="desktop"
-                    type="natural"
-                    fill="var(--color-desktop)"
-                    fillOpacity={0.4}
-                    stroke="var(--color-desktop)"
-                    stackId="a"
-                  />
-                </AreaChart>
-              </ChartContainer>
-              <Separator />
-              <div className="grid gap-2">
-                <div className="flex gap-2 leading-none font-medium">
-                  Trending up by 5.2% this month{" "}
-                  <IconTrendingUp className="size-4" />
-                </div>
-                <div className="text-muted-foreground">
-                  Showing total visitors for the last 6 months. This is just
-                  some random text to test the layout. It spans multiple lines
-                  and should wrap around.
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
