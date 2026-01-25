@@ -4,6 +4,8 @@ import * as React from "react"
 import {
   IconDashboard,
   IconInnerShadowTop,
+  IconListDetails,
+  IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -26,7 +28,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/",
       icon: IconDashboard,
     },
     {
@@ -35,18 +37,18 @@ const data = {
       icon: IconUsers,
 
     },
-    // {
-    //   title: "Workflows",
-    //   url: "http://localhost:5678",
-    //   icon: IconListDetails,
-    //   external: true,
-    // },
-    // {
-    //   title: "Model Tracking",
-    //   url: "http://localhost:TODO",
-    //   icon: IconSettings,
-    //   external: true,
-    // },
+    {
+      title: "Workflows",
+      url: "http://localhost:5678",
+      icon: IconListDetails,
+      external: true,
+    },
+    {
+      title: "Model Tracking",
+      url: "http://localhost:TODO",
+      icon: IconSettings,
+      external: true,
+    },
     // {
     //   title: "Analytics",
     //   url: "#",
