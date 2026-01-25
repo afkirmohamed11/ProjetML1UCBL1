@@ -1,7 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
-import { ChatbotButton } from "@/components/chatbot"
 import {
   SidebarInset,
   SidebarProvider,
@@ -41,7 +40,6 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        <ChatbotButton />
       </SidebarInset>
     </SidebarProvider>
   )

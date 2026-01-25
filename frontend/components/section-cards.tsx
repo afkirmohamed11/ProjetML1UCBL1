@@ -1,4 +1,4 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { IconTrendingDown, IconTrendingUp, IconAlertTriangle, IconUsers, IconBell } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -10,92 +10,133 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function SectionCards() {
+interface DashboardStats {
+  total_customers: number
+  churn_percentage: number
+  churn_count: number
+  notified_count: number
+  at_risk_count: number
+  response_rate: number
+  customers_with_predictions: number
+}
+
+async function fetchDashboardStats(): Promise<DashboardStats | null> {
+  try {
+    const res = await fetch(`${process.env.API_INTERNAL_URL}/dashboard/stats`, {
+      cache: "no-store",
+    })
+    if (!res.ok) return null
+    return res.json()
+  } catch (error) {
+    console.error("Failed to fetch dashboard stats:", error)
+    return null
+  }
+}
+
+export async function SectionCards() {
+  const stats = await fetchDashboardStats()
+
+  // Fallback values if API fails
+  const totalCustomers = stats?.total_customers ?? 0
+  const churnPercentage = stats?.churn_percentage ?? 0
+  const atRiskCount = stats?.at_risk_count ?? 0
+  const notifiedCount = stats?.notified_count ?? 0
+  const responseRate = stats?.response_rate ?? 0
+
+  const isHighChurn = churnPercentage > 20
+  const isLowResponse = responseRate < 50
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Churn Percentage</CardDescription>
+          <CardDescription>Churn Rate</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            25%
+            {churnPercentage}%
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -5%
+            <Badge variant="outline" className={isHighChurn ? "border-red-300 text-red-600" : "border-green-300 text-green-600"}>
+              {isHighChurn ? <IconTrendingUp /> : <IconTrendingDown />}
+              {isHighChurn ? "High" : "Normal"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Decreased retention this month{" "}
-            <IconTrendingDown className="size-4" />
+            {stats?.churn_count ?? 0} customers predicted to churn
           </div>
           <div className="text-muted-foreground">
-            Urgent attention required
+            {isHighChurn ? "Urgent attention required" : "Within acceptable range"}
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Total Customers</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+            {totalCustomers.toLocaleString()}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
+              <IconUsers className="size-3" />
+              Active
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
+            {stats?.customers_with_predictions ?? 0} have predictions
           </div>
           <div className="text-muted-foreground">
-            Acquisition needs attention
+            In the customer database
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>At-Risk Customers</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+            {atRiskCount.toLocaleString()}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+            <Badge variant="outline" className={atRiskCount > 0 ? "border-amber-300 text-amber-600" : "border-green-300 text-green-600"}>
+              <IconAlertTriangle className="size-3" />
+              {atRiskCount > 0 ? "Alert" : "OK"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            High churn probability (&gt;70%)
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
+          <div className="text-muted-foreground">
+            {atRiskCount > 0 ? "Consider proactive outreach" : "No immediate concerns"}
+          </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Notified Customers</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {notifiedCount.toLocaleString()}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
+              <IconBell className="size-3" />
+              {responseRate}% responded
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            {isLowResponse && notifiedCount > 0 ? "Low response rate" : "Engagement tracking"}
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
+          <div className="text-muted-foreground">
+            Retention outreach sent
+          </div>
         </CardFooter>
       </Card>
     </div>
