@@ -3,14 +3,14 @@ import os
 import sys
 
 # Ajouter le chemin du module pipeline pour permettre l'import lors du unpickling
-pipeline_path = os.path.abspath('./artifacts')
+pipeline_path = os.path.abspath('../artifacts')
 if pipeline_path not in sys.path:
     sys.path.append(pipeline_path)
     print(f"Chemin ajouté au sys.path: {pipeline_path}")
 
 class ModelLoader:
     model = None
-    model_path = './artifacts/churn_pipeline.pkl'
+    model_path = '../artifacts/churn_pipeline.pkl'
 
     @classmethod
     def load_model(cls):

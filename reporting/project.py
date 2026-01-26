@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from evidently import Report, Dataset, BinaryClassification, DataDefinition
 from evidently.presets import DataDriftPreset, ClassificationPreset
 from evidently.ui.workspace import Workspace
-from data_loader import DataLoader
+from data_loader import DataLoader,fetch_data_from_rds
 
 def extract_metrics_from_report(my_eval, customer_prod, customer_ref):
     """Extrait les métriques du rapport Evidently et les sauvegarde pour Prometheus."""
@@ -69,31 +69,55 @@ def create_report():
         project = ws.create_project("Churn Monitoring")
     else:
         project = existing_projects[0]
-    
-    data_loader = DataLoader()
-    customer_ref, customer_prod = data_loader.load_data()
 
-    # Configuration de la définition des données
+    # data_loader = DataLoader()
+    customers = fetch_data_from_rds()
+    customer_prod = customers[customers["ct_Last_training"] == False]
+    customer_ref = customers[customers["ct_Last_training"] == True]
+    customer_ref.drop(["ct_Last_training"], axis=1, inplace=True)
+    customer_prod.drop(["ct_Last_training"], axis=1, inplace=True)
+    # ================================================================================
+    # 1. Prepare your column lists
+    # Exclude the ones you don't want to analyze for drift
+    excluded_cols = ['customer_id', 'predictions']
+
+    # Get all other columns
+    all_features = [c for c in customer_prod.columns if c not in excluded_cols]
+
+    # Separate them by type so Evidently uses the correct statistical test
+    # Numerical: float64 and int64 (like tenure, monthly_charges)
+    num_cols = customer_prod[all_features].select_dtypes(include=['number']).columns.tolist()
+
+    # Categorical: object, bool, and category (like gender, partner, contract)
+    cat_cols = customer_prod[all_features].select_dtypes(exclude=['number']).columns.tolist()
+    # ================================================================================================================
+
+
+    # 2. Update the DataDefinition
     definition = DataDefinition(
+        # Explicitly map features
+        numerical_columns=num_cols,
+        categorical_columns=cat_cols,
+        
+        # Define the ML task targets
         classification=[BinaryClassification(
             target="churn",
             prediction_labels="predictions"
-        )],
-        categorical_columns=customer_prod.select_dtypes(include=['int64']).columns.tolist()
+        )]
     )
 
-    # Créer les Dataset objects
+    # 3. Create the datasets as you did before
     current_data = Dataset.from_pandas(customer_prod, data_definition=definition)
     reference_data = Dataset.from_pandas(customer_ref, data_definition=definition)
-    
+
     # Créer et exécuter le rapport
     report = Report(metrics=[
         DataDriftPreset(),
         ClassificationPreset(),
     ])
-    
+
     my_eval = report.run(reference_data=reference_data, current_data=current_data)
-    
+
     # Ajout du run au workspace
     ws.add_run(project.id, my_eval, include_data=False)
     print("Nouveau rapport généré avec succès.")
@@ -105,4 +129,6 @@ def create_report():
 
 
 if __name__ == "__main__":
-    create_report()
+    # create_report()
+    df = fetch_data_from_rds()
+    print(df.head(2))

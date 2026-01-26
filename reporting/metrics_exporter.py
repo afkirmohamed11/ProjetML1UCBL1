@@ -1,131 +1,107 @@
 import time
 from prometheus_client import start_http_server, Gauge
 from project import create_report
-import random
-# === MÉTRIQUES DE DRIFT GLOBAL ===
-# nombre_colonnes_driftees = nombre ABSOLU de colonnes qui ont drifté (ex: 3 colonnes)
-share_drifted_columns = Gauge('drift_share', 
-                              'Pourcentage de colonnes qui ont drifté (ex: 0.15 = 15%)')
-number_drifted_columns = Gauge('drift_count', 
-                               'Nombre absolu de colonnes qui ont drifté (ex: 3)')
+import traceback
+import logging
+from airflow_trigger import send_trigger
 
-# === MÉTRIQUES DE DRIFT PAR COLONNE SPÉCIFIQUE ===
-# Noms exacts des colonnes avec suffixe _drift
-drift_payment_electronic = Gauge('payment_method_Electronic_check_drift', 
-                                 'Drift score for payment_method_Electronic_check')
-drift_internet_fiber = Gauge('internet_service_Fiber_optic_drift', 
-                             'Drift score for internet_service_Fiber_optic')
-drift_monthly_charges = Gauge('monthly_charges_drift', 
-                              'Drift score for monthly_charges')
-drift_paperless_billing = Gauge('paperless_billing_drift', 
-                                'Drift score for paperless_billing')
+# === PROMETHEUS GAUGES (Renamed with _g to avoid variable collision) ===
+share_drift_g = Gauge('drift_share', 'Pourcentage de colonnes qui ont drifté')
+number_drift_g = Gauge('drift_count', 'Nombre absolu de colonnes qui ont drifté')
 
-# === MÉTRIQUES DE CLASSIFICATION ===
-accuracy_gauge = Gauge('accuracy', 'Model accuracy')
-precision_gauge = Gauge('precision', 'Model precision')
-recall_gauge = Gauge('recall', 'Model recall')
-f1_score_gauge = Gauge('f1_score', 'Model F1 score')
+# Drift par colonne
+drift_payment_electronic_g = Gauge('payment_method_Electronic_check_drift', 'Drift Electronic check')
+drift_internet_fiber_g = Gauge('internet_service_Fiber_optic_drift', 'Drift Fiber optic')
+drift_monthly_charges_g = Gauge('monthly_charges_drift', 'Drift monthly charges')
+drift_paperless_billing_g = Gauge('paperless_billing_drift', 'Drift paperless billing')
 
-# === MÉTRIQUES D'INFORMATION SUR LES DONNÉES ===
-current_data_count = Gauge('current_data_count', 
-                           'Nombre d\'enregistrements dans les données de production (current)')
-reference_data_count = Gauge('reference_data_count', 
-                             'Nombre d\'enregistrements dans les données de référence')
-columns_count = Gauge('columns_count', 
-                      'Nombre total de colonnes dans les datasets')
+# Classification
+accuracy_g = Gauge('accuracy', 'Model accuracy')
+precision_g = Gauge('precision', 'Model precision')
+recall_g = Gauge('recall', 'Model recall')
+f1_score_g = Gauge('f1_score', 'Model F1 score')
+
+# Data Info
+current_data_count_g = Gauge('current_data_count', 'Nombre enregistrements prod')
+reference_data_count_g = Gauge('reference_data_count', 'Nombre enregistrements ref')
+columns_count_g = Gauge('columns_count', 'Nombre total de colonnes')
 
 def update_metrics_from_evidently():
-    """Appelle directement create_report() pour obtenir les métriques Evidently."""
-    
     try:
         print("\n Génération d'un nouveau rapport Evidently...")
         metrics = create_report()
         evaluation_metrics = {}  
-        # Mettre à jour le drift global
+        
         if 'global_drift' in metrics:
             nombre = metrics['global_drift'].get('nombre_colonnes_driftees', 0)
             share = metrics['global_drift'].get('share_colonnes_driftees', 0)
-            number_drifted_columns.set(nombre)
-            share_drifted_columns.set(share)
+            number_drift_g.set(nombre)
+            share_drift_g.set(share)
             evaluation_metrics['share_drifted_columns'] = share
-            print(f"Drift global: {nombre} colonnes ({share*100:.1f}%)")
-        
-        # Mettre à jour les drifts par colonne
+
         if 'drift_scores' in metrics:
-            drift_scores = metrics['drift_scores']
-            drift_payment_electronic.set(drift_scores.get('payment_method_Electronic_check', 0))
-            drift_internet_fiber.set(drift_scores.get('internet_service_Fiber_optic', 0))
-            drift_monthly_charges.set(drift_scores.get('monthly_charges', 0))
-            drift_paperless_billing.set(drift_scores.get('paperless_billing', 0))
-
-            evaluation_metrics[' drift_payment_electronic'] =drift_scores.get('payment_method_Electronic_check', 0)
-            evaluation_metrics[' drift_internet_fiber'] =drift_scores.get('internet_service_Fiber_optic', 0)
-            evaluation_metrics[' drift_monthly_charges'] =drift_scores.get('monthly_charges', 0)
-            evaluation_metrics[' drift_paperless_billing'] =drift_scores.get('paperless_billing', 0)
-            print(f"   {len(drift_scores)} drifts de colonnes spécifiques extraits")
-        
-        # Mettre à jour les métriques de classification
-        if 'classification' in metrics:
-            classification = metrics['classification']
-            accuracy_gauge.set(classification.get('accuracy', 0))
-            precision_gauge.set(classification.get('precision', 0))
-            recall_gauge.set(classification.get('recall', 0))
-            f1_score_gauge.set(classification.get('f1_score', 0))
-            print(f"   Accuracy: {classification.get('accuracy', 0):.4f}")
-            print(f"   F1 Score: {classification.get('f1_score', 0):.4f}")
-           
-            #### metrics d'evaluation
-            evaluation_metrics['recall'] = classification.get('recall', 0)
-        
-        # Mettre à jour les informations sur les données
-        if 'data_info' in metrics:
-            data_info = metrics['data_info']
-            nb_current = data_info.get('nombre_enregistrements_current', 0)
-            nb_ref = data_info.get('nombre_enregistrements_reference', 0)
-            nb_cols = data_info.get('nombre_colonnes', 0)
-
-            current_data_count.set(nb_current)
-            reference_data_count.set(nb_ref)
-            columns_count.set(nb_cols)
-
-            #### metrics d'evaluation
-            evaluation_metrics['nb_current'] = nb_current
+            ds = metrics['drift_scores']
+            drift_payment_electronic_g.set(ds.get('payment_method_Electronic_check', 0))
+            drift_internet_fiber_g.set(ds.get('internet_service_Fiber_optic', 0))
+            drift_monthly_charges_g.set(ds.get('monthly_charges', 0))
+            drift_paperless_billing_g.set(ds.get('paperless_billing', 0))
             
-            print(f"   Données PROD (current): {nb_current} enregistrements")
-            print(f"   Données REF: {nb_ref} enregistrements")
-            print(f"   {nb_cols} colonnes au total")
+            # Key names synced with your main loop requirements
+            evaluation_metrics['payment_method_Electronic_check'] = ds.get('payment_method_Electronic_check', 0)
+            evaluation_metrics['internet_service_Fiber_optic'] = ds.get('internet_service_Fiber_optic', 0)
+            evaluation_metrics['monthly_charges'] = ds.get('monthly_charges', 0)
+            evaluation_metrics['paperless_billing'] = ds.get('paperless_billing', 0)
+
+        if 'classification' in metrics:
+            cl = metrics['classification']
+            accuracy_g.set(cl.get('accuracy', 0))
+            precision_g.set(cl.get('precision', 0))
+            recall_g.set(cl.get('recall', 0))
+            f1_score_g.set(cl.get('f1_score', 0))
+            evaluation_metrics['recall'] = cl.get('recall', 0)
         
-        print("\n Métriques Prometheus mises à jour avec succès!")
+        if 'data_info' in metrics:
+            di = metrics['data_info']
+            logging.info("di: %s", di)
+            nb_current = di.get('nombre_enregistrements_current', 0)
+            current_data_count_g.set(nb_current)
+            reference_data_count_g.set(di.get('nombre_enregistrements_reference', 0))
+            columns_count_g.set(di.get('nombre_colonnes', 0))
+            evaluation_metrics['nb_current'] = nb_current
+        
+        logging.info(" Métriques Prometheus mises à jour!")
         return evaluation_metrics
+
     except Exception as e:
-        print(f"\n Erreur lors de la mise à jour des métriques: {e}")
-        import traceback
+        logging.error(" Erreur: %s", e)
         traceback.print_exc()
+        return {} # Returns empty dict so .get() calls don't crash the loop
 
 if __name__ == '__main__':
-    # Démarrer le serveur HTTP pour Prometheus sur le port 8020
     start_http_server(8020)
-   
     
-    # Boucle infinie pour mettre à jour les métriques
     while True:
         evaluation_metrics = update_metrics_from_evidently()
         
-        rec_count =evaluation_metrics.get('nb_current', 0)
+        # We use your exact variable names for the alert logic
+        rec_count = evaluation_metrics.get('nb_current', 0)
         recall = evaluation_metrics.get('recall', 0)
         share_drifted_columns = evaluation_metrics.get('share_drifted_columns', 0)  
-        payment_method_Electronic_check  = evaluation_metrics.get('payment_method_Electronic_check', 0)
-        internet_service_Fiber_optic =  evaluation_metrics.get('internet_service_Fiber_optic', 0)
+        payment_method_Electronic_check = evaluation_metrics.get('payment_method_Electronic_check', 0)
+        internet_service_Fiber_optic = evaluation_metrics.get('internet_service_Fiber_optic', 0)
         monthly_charges = evaluation_metrics.get('monthly_charges', 0)
         paperless_billing = evaluation_metrics.get('paperless_billing', 0)
 
-        if rec_count >=200  and (recall < 0.8 or share_drifted_columns > 0.5     or
-           payment_method_Electronic_check >0.3 or internet_service_Fiber_optic >0.3 or 
-           internet_service_Fiber_optic >0.3 or paperless_billing >0.3):
+        # Your original Alert Logic maintained
+        if rec_count >= 200 and (recall < 0.8 or share_drifted_columns > 0.5 or
+           payment_method_Electronic_check > 0.3 or internet_service_Fiber_optic > 0.3 or 
+           monthly_charges > 0.3 or paperless_billing > 0.3):
             
-            
-            print("ALERTE: Le recall est inférieur à 0.6 sur plus de 1000 enregistrements!")
-        
-        
+            send_trigger()
+        else:
+            logging.info(" No alert detected !")
 
-        time.sleep(3)  # Mise à jour toutes les 5 minutes
+        time.sleep(10) # Updated to 5 minutes as requested
+    
+
+    
