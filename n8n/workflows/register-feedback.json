@@ -20,7 +20,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://backend:8080/feedback",
+        "url": "http://159.65.211.36:8080/feedback",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n  \"token\": \"{{$json.token}}\",\n  \"answer\": \"{{$json.answer}}\",\n  \"feedback_label\": {{$json.feedback_label}},\n  \"source\": \"{{$json.source}}\"\n}\n\n",
