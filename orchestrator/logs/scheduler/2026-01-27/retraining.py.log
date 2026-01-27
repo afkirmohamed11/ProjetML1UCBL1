@@ -5649,3 +5649,227 @@ TypeError: Left hand side (<Task(PythonOperator): model_evaluation_task>) is not
 [2026-01-27T13:27:38.596+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:27:38.596+0000] {dag.py:3096} INFO - Sync 1 DAGs
 [2026-01-27T13:27:38.615+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:27:38.614+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
 [2026-01-27T13:27:38.641+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 2.453 seconds
+[2026-01-27T13:28:08.895+0000] {processor.py:161} INFO - Started process (PID=2101) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:08.897+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:28:08.901+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:08.900+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:12.835+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:28:12.848+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:12.889+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:12.889+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:28:12.907+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:12.906+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:28:12.935+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.055 seconds
+[2026-01-27T13:28:43.149+0000] {processor.py:161} INFO - Started process (PID=2118) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:43.151+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:28:43.154+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:43.153+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:45.578+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:28:45.589+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:28:45.625+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:45.624+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:28:45.640+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:28:45.640+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:28:45.661+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 2.523 seconds
+[2026-01-27T13:29:15.904+0000] {processor.py:161} INFO - Started process (PID=2135) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:15.906+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:29:15.908+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:15.908+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:18.777+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:29:18.787+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:18.822+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:18.821+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:29:18.837+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:18.836+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:29:18.862+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 2.970 seconds
+[2026-01-27T13:29:49.192+0000] {processor.py:161} INFO - Started process (PID=2153) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:49.195+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:29:49.207+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:49.205+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:53.531+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:29:53.542+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:29:53.582+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:53.581+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:29:53.602+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:29:53.601+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:29:53.630+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.469 seconds
+[2026-01-27T13:30:23.860+0000] {processor.py:161} INFO - Started process (PID=2170) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:30:23.861+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:30:23.864+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:30:23.864+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:30:27.144+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:30:27.156+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:30:27.192+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:30:27.192+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:30:27.208+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:30:27.208+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:30:27.241+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.396 seconds
+[2026-01-27T13:30:57.493+0000] {processor.py:161} INFO - Started process (PID=2187) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:30:57.495+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:30:57.500+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:30:57.498+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:31:00.792+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:31:00.802+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:31:00.841+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:31:00.841+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:31:00.861+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:31:00.860+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:31:00.899+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.420 seconds
+[2026-01-27T13:31:31.242+0000] {processor.py:161} INFO - Started process (PID=2204) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:31:31.243+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:31:31.248+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:31:31.246+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:31:35.525+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:31:35.537+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:31:35.574+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:31:35.574+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:31:35.595+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:31:35.595+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:31:35.629+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.418 seconds
+[2026-01-27T13:32:05.959+0000] {processor.py:161} INFO - Started process (PID=2221) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:05.961+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:32:05.969+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:05.965+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:11.251+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:32:11.268+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:11.332+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:11.328+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:32:11.358+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:11.358+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:32:11.417+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 5.477 seconds
+[2026-01-27T13:32:41.723+0000] {processor.py:161} INFO - Started process (PID=2244) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:41.724+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:32:41.726+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:41.726+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:45.853+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:32:45.862+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:32:45.919+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:45.918+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:32:45.938+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:32:45.938+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:32:45.971+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.262 seconds
+[2026-01-27T13:33:16.085+0000] {processor.py:161} INFO - Started process (PID=2261) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:16.087+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:33:16.091+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:16.090+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:20.421+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:33:20.436+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:20.470+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:20.469+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:33:20.487+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:20.487+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:33:20.516+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.450 seconds
+[2026-01-27T13:33:51.077+0000] {processor.py:161} INFO - Started process (PID=2278) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:51.078+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:33:51.081+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:51.081+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:56.175+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:33:56.188+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:33:56.235+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:56.234+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:33:56.257+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:33:56.257+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:33:56.297+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 5.235 seconds
+[2026-01-27T13:34:26.981+0000] {processor.py:161} INFO - Started process (PID=2295) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:34:26.983+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:34:26.988+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:34:26.987+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:34:30.954+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:34:30.964+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:34:30.999+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:34:30.999+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:34:31.017+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:34:31.016+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:34:31.051+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.088 seconds
+[2026-01-27T13:35:01.187+0000] {processor.py:161} INFO - Started process (PID=2312) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:01.189+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:35:01.191+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:01.191+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:05.608+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:35:05.627+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:05.671+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:05.669+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:35:05.695+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:05.695+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:35:05.740+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.564 seconds
+[2026-01-27T13:35:36.278+0000] {processor.py:161} INFO - Started process (PID=2329) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:36.283+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:35:36.287+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:36.287+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:40.474+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:35:40.485+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:35:40.531+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:40.530+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:35:40.548+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:35:40.547+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:35:40.576+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.313 seconds
+[2026-01-27T13:36:10.789+0000] {processor.py:161} INFO - Started process (PID=2352) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:10.791+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:36:10.797+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:10.796+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:14.957+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:36:14.969+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:15.008+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:15.007+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:36:15.030+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:15.030+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:36:15.063+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.291 seconds
+[2026-01-27T13:36:45.342+0000] {processor.py:161} INFO - Started process (PID=2369) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:45.345+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:36:45.350+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:45.349+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:51.224+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:36:51.240+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:36:53.413+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:53.411+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:36:53.530+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:36:53.528+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:36:54.758+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 9.432 seconds
+[2026-01-27T13:37:25.150+0000] {processor.py:161} INFO - Started process (PID=2386) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:37:25.151+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:37:25.155+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:37:25.154+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:37:28.542+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:37:28.553+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:37:28.591+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:37:28.591+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:37:28.614+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:37:28.613+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:37:28.648+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.514 seconds
+[2026-01-27T13:37:58.967+0000] {processor.py:161} INFO - Started process (PID=2403) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:37:58.968+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:37:58.971+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:37:58.971+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:38:02.305+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:38:02.318+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:38:02.355+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:38:02.354+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:38:02.372+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:38:02.372+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:38:02.403+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.449 seconds
+[2026-01-27T13:38:32.546+0000] {processor.py:161} INFO - Started process (PID=2420) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:38:32.548+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:38:32.550+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:38:32.550+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:38:36.072+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:38:36.083+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:38:36.118+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:38:36.118+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:38:36.136+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:38:36.136+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:38:36.167+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.636 seconds
+[2026-01-27T13:39:06.551+0000] {processor.py:161} INFO - Started process (PID=2437) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:06.553+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:39:06.560+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:06.559+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:10.135+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:39:10.147+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:10.181+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:10.180+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:39:10.198+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:10.198+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:39:10.233+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.697 seconds
+[2026-01-27T13:39:40.531+0000] {processor.py:161} INFO - Started process (PID=2460) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:40.533+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:39:40.539+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:40.539+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:45.129+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:39:45.142+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:39:45.186+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:45.185+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:39:45.204+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:39:45.204+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:39:45.238+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 4.730 seconds
+[2026-01-27T13:40:15.443+0000] {processor.py:161} INFO - Started process (PID=2477) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:15.445+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:40:15.452+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:15.451+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:21.232+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:40:21.257+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:21.305+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:21.304+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:40:21.332+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:21.329+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:40:21.378+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 5.953 seconds
+[2026-01-27T13:40:51.864+0000] {processor.py:161} INFO - Started process (PID=2494) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:51.866+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:40:51.869+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:51.869+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:55.313+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:40:55.330+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:40:55.421+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:55.420+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:40:55.479+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:40:55.479+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:40:55.682+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.830 seconds
+[2026-01-27T13:41:26.039+0000] {processor.py:161} INFO - Started process (PID=2511) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:41:26.041+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:41:26.044+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:41:26.044+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:41:29.262+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:41:29.273+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:41:29.309+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:41:29.308+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:41:29.326+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:41:29.326+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:41:29.354+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.334 seconds
+[2026-01-27T13:41:59.631+0000] {processor.py:161} INFO - Started process (PID=2528) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:41:59.633+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:41:59.636+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:41:59.635+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:42:02.950+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:42:02.959+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:42:03.051+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:42:03.050+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:42:03.071+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:42:03.071+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:42:03.114+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.495 seconds
+[2026-01-27T13:42:33.403+0000] {processor.py:161} INFO - Started process (PID=2545) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:42:33.404+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:42:33.407+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:42:33.407+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:42:36.438+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:42:36.448+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:42:36.478+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:42:36.477+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:42:36.493+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:42:36.492+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:42:36.521+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.133 seconds
+[2026-01-27T13:43:06.630+0000] {processor.py:161} INFO - Started process (PID=2562) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:06.632+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:43:06.635+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:06.635+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:09.663+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:43:09.678+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:09.716+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:09.716+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:43:09.738+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:09.738+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:43:09.766+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 3.149 seconds
+[2026-01-27T13:43:41.131+0000] {processor.py:161} INFO - Started process (PID=2585) to work on /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:41.159+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/retraining.py for tasks to queue
+[2026-01-27T13:43:41.195+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:41.194+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:50.974+0000] {logging_mixin.py:188} INFO - Added path to: /opt/airflow/src/utils
+[2026-01-27T13:43:50.999+0000] {processor.py:840} INFO - DAG(s) 'ml_retraining_pipeline' retrieved from /opt/airflow/dags/retraining.py
+[2026-01-27T13:43:51.104+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:51.103+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-01-27T13:43:51.130+0000] {logging_mixin.py:188} INFO - [2026-01-27T13:43:51.129+0000] {dag.py:3954} INFO - Setting next_dagrun for ml_retraining_pipeline to None, run_after=None
+[2026-01-27T13:43:51.173+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/retraining.py took 9.518 seconds
