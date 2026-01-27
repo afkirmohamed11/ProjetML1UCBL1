@@ -1,0 +1,21 @@
+[2026-01-27T00:03:54.928+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-01-27T00:03:54.956+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ml_retraining_pipeline.validate_and_deploy manual__2026-01-27T00:03:51.698546+00:00 [queued]>
+[2026-01-27T00:03:54.967+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ml_retraining_pipeline.validate_and_deploy manual__2026-01-27T00:03:51.698546+00:00 [queued]>
+[2026-01-27T00:03:54.969+0000] {taskinstance.py:2303} INFO - Starting attempt 1 of 1
+[2026-01-27T00:03:54.987+0000] {taskinstance.py:2327} INFO - Executing <Task(PythonOperator): validate_and_deploy> on 2026-01-27 00:03:51.698546+00:00
+[2026-01-27T00:03:54.994+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:61: DeprecationWarning: This process (pid=169) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2026-01-27T00:03:54.996+0000] {standard_task_runner.py:63} INFO - Started process 172 to run task
+[2026-01-27T00:03:54.997+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ml_retraining_pipeline', 'validate_and_deploy', 'manual__2026-01-27T00:03:51.698546+00:00', '--job-id', '108', '--raw', '--subdir', 'DAGS_FOLDER/retraining.py', '--cfg-path', '/tmp/tmp8svd2e7e']
+[2026-01-27T00:03:55.000+0000] {standard_task_runner.py:91} INFO - Job 108: Subtask validate_and_deploy
+[2026-01-27T00:03:55.056+0000] {task_command.py:426} INFO - Running <TaskInstance: ml_retraining_pipeline.validate_and_deploy manual__2026-01-27T00:03:51.698546+00:00 [running]> on host f7ac3341f44e
+[2026-01-27T00:03:55.187+0000] {taskinstance.py:2644} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='ml_retraining_pipeline' AIRFLOW_CTX_TASK_ID='validate_and_deploy' AIRFLOW_CTX_EXECUTION_DATE='2026-01-27T00:03:51.698546+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-01-27T00:03:51.698546+00:00'
+[2026-01-27T00:03:55.189+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-01-27T00:03:55.562+0000] {retraining.py:14} ERROR - Erreur lors du chargement du modèle champion : No such file or directory: '/mlflow/artifacts/0/models/m-48f3a0648fde4a83ac7ed8f82f9e566b/artifacts/.'
+[2026-01-27T00:03:55.563+0000] {python.py:237} INFO - Done. Returned value was: False
+[2026-01-27T00:03:55.564+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-01-27T00:03:55.603+0000] {taskinstance.py:1205} INFO - Marking task as SUCCESS. dag_id=ml_retraining_pipeline, task_id=validate_and_deploy, execution_date=20260127T000351, start_date=20260127T000354, end_date=20260127T000355
+[2026-01-27T00:03:55.653+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-01-27T00:03:55.671+0000] {taskinstance.py:3482} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-01-27T00:03:55.674+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

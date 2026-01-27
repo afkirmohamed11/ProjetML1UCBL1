@@ -1,0 +1,47 @@
+artifact_path: mlflow-artifacts:/1/models/m-b89bc336797048979dffbac8c9e92d57/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+is_signature_from_type_hint: false
+mlflow_version: 3.8.1
+model_id: m-b89bc336797048979dffbac8c9e92d57
+model_size_bytes: 9348
+model_uuid: m-b89bc336797048979dffbac8c9e92d57
+prompts: null
+run_id: 46b17847323f431785a6ff4f2796af38
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "string", "name": "gender", "required": true}, {"type": "boolean",
+    "name": "senior_citizen", "required": true}, {"type": "boolean", "name": "partner",
+    "required": true}, {"type": "boolean", "name": "dependents", "required": true},
+    {"type": "long", "name": "tenure", "required": true}, {"type": "boolean", "name":
+    "phone_service", "required": true}, {"type": "string", "name": "multiple_lines",
+    "required": true}, {"type": "string", "name": "internet_service", "required":
+    true}, {"type": "string", "name": "online_security", "required": true}, {"type":
+    "string", "name": "online_backup", "required": true}, {"type": "string", "name":
+    "device_protection", "required": true}, {"type": "string", "name": "tech_support",
+    "required": true}, {"type": "string", "name": "streaming_tv", "required": true},
+    {"type": "string", "name": "streaming_movies", "required": true}, {"type": "string",
+    "name": "contract", "required": true}, {"type": "boolean", "name": "paperless_billing",
+    "required": true}, {"type": "string", "name": "payment_method", "required": true},
+    {"type": "double", "name": "monthly_charges", "required": true}, {"type": "double",
+    "name": "total_charges", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "bool", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-01-27 13:17:29.818722'

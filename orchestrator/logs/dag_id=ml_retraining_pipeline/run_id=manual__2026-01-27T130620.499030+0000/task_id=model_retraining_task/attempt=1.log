@@ -1,0 +1,437 @@
+[2026-01-27T13:06:27.623+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-01-27T13:06:27.651+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ml_retraining_pipeline.model_retraining_task manual__2026-01-27T13:06:20.499030+00:00 [queued]>
+[2026-01-27T13:06:27.662+0000] {taskinstance.py:2073} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ml_retraining_pipeline.model_retraining_task manual__2026-01-27T13:06:20.499030+00:00 [queued]>
+[2026-01-27T13:06:27.663+0000] {taskinstance.py:2303} INFO - Starting attempt 1 of 1
+[2026-01-27T13:06:27.683+0000] {taskinstance.py:2327} INFO - Executing <Task(PythonOperator): model_retraining_task> on 2026-01-27 13:06:20.499030+00:00
+[2026-01-27T13:06:27.700+0000] {warnings.py:110} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:61: DeprecationWarning: This process (pid=214) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2026-01-27T13:06:27.703+0000] {standard_task_runner.py:63} INFO - Started process 224 to run task
+[2026-01-27T13:06:27.703+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ml_retraining_pipeline', 'model_retraining_task', 'manual__2026-01-27T13:06:20.499030+00:00', '--job-id', '378', '--raw', '--subdir', 'DAGS_FOLDER/retraining.py', '--cfg-path', '/tmp/tmpsca3nsyj']
+[2026-01-27T13:06:27.707+0000] {standard_task_runner.py:91} INFO - Job 378: Subtask model_retraining_task
+[2026-01-27T13:06:27.774+0000] {task_command.py:426} INFO - Running <TaskInstance: ml_retraining_pipeline.model_retraining_task manual__2026-01-27T13:06:20.499030+00:00 [running]> on host 406e58cacf5a
+[2026-01-27T13:06:27.923+0000] {taskinstance.py:2644} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='ml_retraining_pipeline' AIRFLOW_CTX_TASK_ID='model_retraining_task' AIRFLOW_CTX_EXECUTION_DATE='2026-01-27T13:06:20.499030+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-01-27T13:06:20.499030+00:00'
+[2026-01-27T13:06:27.925+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-01-27T13:06:27.941+0000] {logging_mixin.py:188} INFO - Connexion à RDS en cours...
+[2026-01-27T13:06:29.328+0000] {logging_mixin.py:188} INFO - Extraction réussie : 5834 lignes de réf
+[2026-01-27T13:06:29.359+0000] {warnings.py:110} WARNING - /opt/***/src/train_finetune.py:89: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  new_customers.drop(columns=["ct_Last_training"], inplace=True)
+
+[2026-01-27T13:06:29.362+0000] {warnings.py:110} WARNING - /opt/***/src/train_finetune.py:90: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  old_customers.drop(columns=["ct_Last_training"], inplace=True)
+
+[2026-01-27T13:06:32.735+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:06:32 WARNING mlflow.utils.git_utils: Failed to import Git (the Git executable is probably not on your PATH), so Git SHA is not available. Error: Failed to initialize: Bad git executable.
+The git executable must be specified in one of the following ways:
+    - be included in your $PATH
+    - be set via $GIT_PYTHON_GIT_EXECUTABLE
+    - explicitly set via git.refresh(<full-path-to-git-executable>)
+
+All git commands will error until this is rectified.
+
+This initial message can be silenced or aggravated in the future by setting the
+$GIT_PYTHON_REFRESH environment variable. Use one of the following values:
+    - quiet|q|silence|s|silent|none|n|0: for no message or exception
+    - warn|w|warning|log|l|1: for a warning message (logging level CRITICAL, displayed by default)
+    - error|e|exception|raise|r|2: for a raised exception
+
+Example:
+    export GIT_PYTHON_REFRESH=quiet
+[2026-01-27T13:06:33.601+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:06:33 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/home/***/.local/lib/python3.12/site-packages/mlflow/types/utils.py:452: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values <https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values>`_ for more details."
+[2026-01-27T13:06:33.621+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/joblib/parallel.py:1379: UserWarning: Loky-backed parallel loops cannot be called in a multiprocessing, setting n_jobs=1
+  n_jobs = self._backend.configure(
+
+[2026-01-27T13:06:33.774+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:34.043+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:34.200+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:34.369+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:34.490+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:34.718+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.056+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.237+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.359+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.464+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.564+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.565+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:35.664+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.665+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:35.759+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.760+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:35.846+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.847+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:35.935+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:35.936+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.028+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.030+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.131+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.132+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.238+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.239+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.355+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.356+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.453+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.454+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:36.545+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.629+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.711+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.793+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.880+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:36.973+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.086+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.222+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.357+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.469+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.584+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.585+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:37.695+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.696+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:37.796+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.797+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:37.899+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.900+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:37.991+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:37.992+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.086+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.087+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.185+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.186+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.281+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.282+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.371+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.372+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.475+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.476+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:38.571+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.661+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.763+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.854+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:38.966+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.072+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.211+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.314+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.410+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.502+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.599+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.600+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:39.689+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.690+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:39.781+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.782+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:39.865+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.866+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:39.949+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:39.950+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.035+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.036+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.144+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.145+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.247+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.248+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.339+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.340+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.431+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.432+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:40.534+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.640+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.739+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.828+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:40.922+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.018+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.111+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.219+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.325+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.433+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.569+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.571+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:41.750+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:41.754+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.021+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.023+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.147+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.148+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.321+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.322+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.483+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.484+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.722+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.724+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:42.891+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:42.892+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:43.140+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:43.141+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:43.338+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:43.339+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1160: UserWarning: Inconsistent values: penalty=l2 with l1_ratio=1.0. penalty is deprecated. Please use l1_ratio only.
+  warnings.warn(
+
+[2026-01-27T13:06:43.472+0000] {logging_and_warnings.py:73} WARNING - /home/***/.local/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py:1135: FutureWarning: 'penalty' was deprecated in version 1.8 and will be removed in 1.10. To avoid this warning, leave 'penalty' set to its default value and use 'l1_ratio' or 'C' instead. Use l1_ratio=0 instead of penalty='l2', l1_ratio=1 instead of penalty='l1', and C=np.inf instead of penalty=None.
+  warnings.warn(
+
+[2026-01-27T13:06:43.508+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:06:43 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/home/***/.local/lib/python3.12/site-packages/mlflow/types/utils.py:452: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values <https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values>`_ for more details."
+[2026-01-27T13:07:00.968+0000] {font_manager.py:1639} INFO - generated new fontManager
+[2026-01-27T13:07:11.053+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:07:11 INFO mlflow.sklearn.utils: Logging the 5 best runs, 11 runs will be omitted.
+[2026-01-27T13:07:13.093+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:07:13 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/home/***/.local/lib/python3.12/site-packages/mlflow/types/utils.py:452: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values <https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values>`_ for more details."
+[2026-01-27T13:07:14.703+0000] {logging_mixin.py:188} INFO - 🏃 View run silent-dolphin-791 at: http://mlflow:5000/#/experiments/1/runs/6acaa7991fc54f48ab76370eacd4f8eb
+[2026-01-27T13:07:14.703+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:14.976+0000] {logging_mixin.py:188} INFO - 🏃 View run unruly-mule-711 at: http://mlflow:5000/#/experiments/1/runs/bbd5d0f6cdad40b8bfdbf61cfb34059e
+[2026-01-27T13:07:14.979+0000] {logging_mixin.py:188} INFO - 🏃 View run delicate-duck-701 at: http://mlflow:5000/#/experiments/1/runs/fccd37cbf93544409af34ae9678849bf
+[2026-01-27T13:07:14.979+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:14.980+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:14.991+0000] {logging_mixin.py:188} INFO - 🏃 View run polite-slug-777 at: http://mlflow:5000/#/experiments/1/runs/03d357284cb343b6962d2ce17906d619
+[2026-01-27T13:07:14.994+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:15.762+0000] {logging_mixin.py:188} INFO - 🏃 View run masked-carp-623 at: http://mlflow:5000/#/experiments/1/runs/2761ae38855649dc96fbdcfae41a9836
+[2026-01-27T13:07:15.764+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:18.716+0000] {logging_mixin.py:188} WARNING - Registered model 'churn_model' already exists. Creating a new version of this model...
+[2026-01-27T13:07:20.659+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:07:20 WARNING mlflow.tracking._model_registry.fluent: Run with id 05dae10c34d0491f9cc22d096494bef2 has no artifacts at artifact path 'model', registering model based on models:/m-7526bc42bb19485da198687d8ada550c instead
+[2026-01-27T13:07:20.938+0000] {logging_mixin.py:188} WARNING - 2026/01/27 13:07:20 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: churn_model, version 8
+[2026-01-27T13:07:20.941+0000] {logging_mixin.py:188} WARNING - Created version '8' of model 'churn_model'.
+[2026-01-27T13:07:21.237+0000] {logging_mixin.py:188} INFO - 🏃 View run grid_search_tuning at: http://mlflow:5000/#/experiments/1/runs/05dae10c34d0491f9cc22d096494bef2
+[2026-01-27T13:07:21.237+0000] {logging_mixin.py:188} INFO - 🧪 View experiment at: http://mlflow:5000/#/experiments/1
+[2026-01-27T13:07:21.364+0000] {python.py:237} INFO - Done. Returned value was: None
+[2026-01-27T13:07:21.365+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-01-27T13:07:21.378+0000] {taskinstance.py:1205} INFO - Marking task as SUCCESS. dag_id=ml_retraining_pipeline, task_id=model_retraining_task, execution_date=20260127T130620, start_date=20260127T130627, end_date=20260127T130721
+[2026-01-27T13:07:21.454+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-01-27T13:07:21.485+0000] {taskinstance.py:3482} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-01-27T13:07:21.489+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
