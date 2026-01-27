@@ -1,1 +1,0 @@
-[2026-01-26T21:56:37.880+0000] {task_context_logger.py:104} ERROR - Executor reports task instance <TaskInstance: ml_retraining_pipeline.validate_and_deploy manual__2026-01-26T21:23:32.218423+00:00 [queued]> finished (failed) although the task says it's queued. (Info: None) Was the task killed externally?
