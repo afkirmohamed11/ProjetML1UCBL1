@@ -10,14 +10,11 @@ services:
       - "8080:8080"
     env_file:
       - ./backend/.env
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
-    volumes:
-      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8080
     environment:
       - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app
     networks:
-      - prod_net
+      - app_network
 
   frontend:
     build:
@@ -25,16 +22,12 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8080
       - API_INTERNAL_URL=http://backend:8080
-      - WATCHPACK_POLLING=true
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     networks:
-      - prod_net
+      - app_network
 
   n8n:
     image: n8nio/n8n:latest
@@ -45,19 +38,15 @@ services:
       - ./.env
     environment:
       - TZ=Europe/Paris
-      - N8N_PUBLIC_BASE_URL=http://localhost:5678
-      - WEBHOOK_URL=http://localhost:5678
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - N8N_ENV_ALLOWLIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
-      - N8N_ENV_WHITELIST=OPENAI_API_KEY,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,POSTGRES_HOST,POSTGRES_PORT,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./n8n/workflows:/workflows:ro
     networks:
-      - prod_net
+      - app_network
 
 networks:
-  prod_net:
+  app_network:
     driver: bridge
 
 volumes:

@@ -20,7 +20,7 @@ from typing import List, Dict
 import requests
 import time
 
-from config import K_RETRAIN, MODEL_PATH
+from config import K_RETRAIN, MODEL_PATH, N8N_URL, FRONTEND_URL
  
 
 # Dynamically add the pipeline directory to Python path
@@ -44,7 +44,7 @@ app = FastAPI(title="Telco Churn Prediction API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[FRONTEND_URL, "http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -264,6 +264,130 @@ def predict_customer(customer_id: str):
 def model_info():
     """Return metadata about the loaded model to help integration."""
     return get_model_info()
+
+# > Dashboard Endpoints
+@app.get("/dashboard/stats")
+def get_dashboard_stats():
+    """
+    Return dashboard statistics:
+    - Churn percentage (customers with churn_label=True / total with predictions)
+    - Total customers
+    - Notified customers count
+    - At-risk customers (high churn probability)
+    """
+    conn = None
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            # Total customers
+            cur.execute("SELECT COUNT(*) FROM customers")
+            total_customers = cur.fetchone()[0]
+
+            # Customers with predictions
+            cur.execute("""
+                SELECT COUNT(DISTINCT customer_id) FROM predictions
+            """)
+            customers_with_predictions = cur.fetchone()[0]
+
+            # Churn count (latest prediction per customer where churn_label is true)
+            cur.execute("""
+                SELECT COUNT(*) FROM (
+                    SELECT DISTINCT ON (customer_id) customer_id, churn_label
+                    FROM predictions
+                    ORDER BY customer_id, created_at DESC
+                ) latest WHERE churn_label = true
+            """)
+            churn_count = cur.fetchone()[0]
+
+            # Churn percentage
+            churn_percentage = (churn_count / customers_with_predictions * 100) if customers_with_predictions > 0 else 0
+
+            # Notified customers (have feedback entry with sent_at)
+            cur.execute("""
+                SELECT COUNT(DISTINCT p.customer_id) 
+                FROM feedback f
+                JOIN predictions p ON f.prediction_id = p.prediction_id
+                WHERE f.sent_at IS NOT NULL
+            """)
+            notified_count = cur.fetchone()[0]
+
+            # At-risk customers (churn_score >= 0.7, latest prediction)
+            cur.execute("""
+                SELECT COUNT(*) FROM (
+                    SELECT DISTINCT ON (customer_id) customer_id, churn_score
+                    FROM predictions
+                    ORDER BY customer_id, created_at DESC
+                ) latest WHERE churn_score >= 0.7
+            """)
+            at_risk_count = cur.fetchone()[0]
+
+            # Feedback response rate
+            cur.execute("""
+                SELECT 
+                    COUNT(*) FILTER (WHERE answered_at IS NOT NULL) as responded,
+                    COUNT(*) as total
+                FROM feedback
+                WHERE sent_at IS NOT NULL
+            """)
+            feedback_row = cur.fetchone()
+            feedback_responded = feedback_row[0]
+            feedback_total = feedback_row[1]
+            response_rate = (feedback_responded / feedback_total * 100) if feedback_total > 0 else 0
+
+            return {
+                "total_customers": total_customers,
+                "churn_percentage": round(churn_percentage, 1),
+                "churn_count": churn_count,
+                "notified_count": notified_count,
+                "at_risk_count": at_risk_count,
+                "response_rate": round(response_rate, 1),
+                "customers_with_predictions": customers_with_predictions
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch dashboard stats: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.get("/dashboard/churn-over-time")
+def get_churn_over_time(days: int = 90):
+    """
+    Return daily churn prediction counts for the chart.
+    Returns data for the last N days (default 90).
+    """
+    conn = None
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT 
+                    DATE(created_at) as date,
+                    COUNT(*) FILTER (WHERE churn_label = true) as churn_count,
+                    COUNT(*) as total_predictions
+                FROM predictions
+                WHERE created_at >= CURRENT_DATE - INTERVAL '%s days'
+                GROUP BY DATE(created_at)
+                ORDER BY date ASC
+            """, (days,))
+            
+            rows = cur.fetchall()
+            
+            data = []
+            for row in rows:
+                data.append({
+                    "date": row[0].isoformat(),
+                    "churn": row[1],
+                    "total": row[2]
+                })
+            
+            return {"data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch churn data: {e}")
+    finally:
+        if conn:
+            conn.close()
+
 
 # > Customer Data Endpoints
 REQUIRED_UPLOAD_COLUMNS: List[str] = []
@@ -628,7 +752,7 @@ def notify_customers(payload: dict):
             print(f"[NOTIFY] Found prediction {prediction_id} with token {token} for customer {customer_id}")
             
             # Call n8n webhook to send notification
-            webhook_url = "http://n8n:5678/webhook/notify-churn"
+            webhook_url = f"{N8N_URL}/webhook/notify-churn"
             webhook_payload = {
                 "customer_id": str(customer_id),
                 "token": str(token),
@@ -666,4 +790,33 @@ def notify_customers(payload: dict):
         "notified": notified,
         "failed": failed
     }
+
+
+@app.post("/chatbot/query")
+async def chatbot_query(query: dict):
+    """
+    Proxy endpoint for chatbot queries to AWS Lambda.
+    Forwards the question to the Lambda function and returns the answer.
+    """
+    try:
+        lambda_url = "https://mrvsjty45aj4nyk7q257wi236m0nrgfc.lambda-url.eu-west-3.on.aws/chat"
+        response = requests.post(
+            lambda_url,
+            json={"question": query.get("question", "")},
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        
+        if response.ok:
+            return response.json()
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Lambda returned error: {response.text}"
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to connect to chatbot service: {str(e)}"
+        )
 

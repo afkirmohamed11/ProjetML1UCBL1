@@ -1,0 +1,19 @@
+# Data Processing
+pandas==2.3.3
+numpy==1.26.2
+
+# Database
+sqlalchemy==2.0.43
+psycopg2-binary==2.9.11
+
+# ML & Model
+scikit-learn==1.8.0
+joblib==1.5.3
+
+# Monitoring & Reporting
+evidently==0.7.18
+
+# Prometheus Metrics Export
+prometheus-client==0.19.0
+
+mlflow==3.8.1

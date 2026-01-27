@@ -2,25 +2,14 @@
 
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
   IconInnerShadowTop,
   IconListDetails,
-  IconReport,
-  IconSearch,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -39,7 +28,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/",
       icon: IconDashboard,
     },
     {
@@ -48,18 +37,12 @@ const data = {
       icon: IconUsers,
 
     },
-    // {
-    //   title: "Workflows",
-    //   url: "http://localhost:5678",
-    //   icon: IconListDetails,
-    //   external: true,
-    // },
-    // {
-    //   title: "Model Tracking",
-    //   url: "http://localhost:TODO",
-    //   icon: IconSettings,
-    //   external: true,
-    // },
+    {
+      title: "Workflows",
+      url: process.env.NEXT_PUBLIC_N8N_URL || "http://68.183.255.194:5678",
+      icon: IconListDetails,
+      external: true,
+    },
     // {
     //   title: "Analytics",
     //   url: "#",
@@ -130,9 +113,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavDocuments items={data.documents} /> */}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
     </Sidebar>
   )
 }

@@ -68,6 +68,9 @@ class FeedbackResponse(BaseModel):
 class RetrainRequest(BaseModel):
     reason: Literal["feedback", "drift"]
 
+class ChatbotQuery(BaseModel):
+    question: str
+
 
 class CustomerDB(BaseModel):
     """
