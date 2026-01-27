@@ -1,0 +1,264 @@
+version: "3.8"
+
+# ==============================================================================
+# CONFIGURATION COMMUNE AIRFLOW (ANCHORS)
+# ==============================================================================
+x-airflow-common:
+  &airflow-common
+  build: ./orchestrator
+  user: "${AIRFLOW_UID:-50000}:0"
+  # env_file: .env
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    # IMPORTANT: Activer l'auth basique pour permettre au script Python de trigger les DAGs
+    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
+    PYTHONPATH: /opt/airflow/dags:/opt/airflow/src
+    TESSDATA_PREFIX: /usr/share/tesseract-ocr/5/tessdata
+  volumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/orchestrator/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/orchestrator/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/orchestrator/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/orchestrator/artifacts:/opt/airflow/artifacts
+    - ${AIRFLOW_PROJ_DIR:-.}//orchestrator/src:/opt/airflow/src
+
+  networks:
+    - airflow_net
+  depends_on:
+    &airflow-common-depends-on
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+
+services:
+  # ==========================================
+  # INFRASTRUCTURE DE BASE (DB & CACHE)
+  # ==========================================
+  postgres:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    networks:
+      - airflow_net
+
+  redis:
+    image: redis:latest
+    container_name: redis-broker
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+    restart: always
+    networks:
+      - airflow_net
+
+  # ==========================================
+  # SERVICES AIRFLOW
+  # ==========================================
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    container_name: airflow-webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    container_name: airflow-scheduler
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-worker:
+    <<: *airflow-common
+    command: celery worker
+    container_name: airflow-worker
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+    container_name: airflow-triggerer
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    <<: *airflow-common
+    container_name: airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        mkdir -p /sources/logs /sources/dags /sources/plugins
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        airflow db migrate && \
+        airflow users create --username ${_AIRFLOW_WWW_USER_USERNAME:-airflow} --password ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} --firstname Admin --lastname Admin --role Admin --email admin@example.com || true
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+    volumes:
+      - ${AIRFLOW_PROJ_DIR:-.}/orchestrator:/sources
+
+  # ==========================================
+  # MLFLOW
+  # ==========================================
+
+  mlflow:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ghcr.io/mlflow/mlflow:latest
+        # We install psycopg2-binary (just in case) and ensure we have a way to check health
+        RUN pip install psycopg2-binary
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    networks:
+      - airflow_net
+    volumes:
+      - ./mlruns:/mlflow/artifacts
+    # --- ADD THIS BLOCK ---
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('localhost', 5000))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # ----------------------
+    command: >
+      mlflow server 
+      --backend-store-uri sqlite:////mlflow/artifacts/mlflow.db 
+      --default-artifact-root mlflow-artifacts:/ 
+      --artifacts-destination /mlflow/artifacts
+      --host 0.0.0.0 
+      --port 5000
+      --serve-artifacts
+      --allowed-hosts "*"
+
+
+
+  # ==========================================
+  # MONITORING SERVICES
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./reporting/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring_net
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000" # Changé en 3001 car n8n/front pourraient utiliser 3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./reporting/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - monitoring_net
+    depends_on:
+      - prometheus
+
+  evidently-exporter:
+    build:
+      context: ./reporting
+      dockerfile: Dockerfile
+    container_name: evidently-exporter
+    ports:
+      - "8020:8020"
+    volumes:
+      - ./orchestrator/init_mlflow.py:/app/init_mlflow.py
+      - ./reporting/artifacts:/app/artifacts
+      # Ensure any other needed files (like preprocess.py) are mapped here
+    environment:
+      - AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PYTHONPATH=/app 
+    networks:
+      - monitoring_net
+      - airflow_net
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    restart: always
+    # This is the "Magic" line:
+    entrypoint: >
+      bash -c "
+      echo 'Running MLflow initialization...';
+      python /app/init_mlflow.py;
+      echo 'Initialization complete. Starting Evidently Exporter...';
+      python /app/metrics_exporter.py" # Replace with the actual command from your Dockerfile
+
+
+
+networks:
+  airflow_net:
+    driver: bridge
+  monitoring_net:
+    driver: bridge
+
+
+volumes:
+  postgres-db-volume:
+  prometheus-data:
+  grafana-data:
