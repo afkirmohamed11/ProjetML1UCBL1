@@ -155,7 +155,6 @@ services:
       context: .
       dockerfile_inline: |
         FROM ghcr.io/mlflow/mlflow:latest
-        # We install psycopg2-binary (just in case) and ensure we have a way to check health
         RUN pip install psycopg2-binary
     container_name: mlflow-server
     ports:
@@ -164,14 +163,13 @@ services:
       - airflow_net
     volumes:
       - ./mlruns:/mlflow/artifacts
-    # --- ADD THIS BLOCK ---
     healthcheck:
-      test: ["CMD", "python3", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('localhost', 5000))"]
+      # Using a simpler check to see if the port is open
+      test: ["CMD-SHELL", "timeout 1s bash -c ':> /dev/tcp/127.0.0.1/5000' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
-    # ----------------------
+      start_period: 30s # Increased to give it more time to boot
     command: >
       mlflow server 
       --backend-store-uri sqlite:////mlflow/artifacts/mlflow.db 
