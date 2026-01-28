@@ -72,10 +72,10 @@ def create_report():
 
     # data_loader = DataLoader()
     customers = fetch_data_from_rds()
-    customer_prod = customers[customers["ct_Last_training"] == False]
-    customer_ref = customers[customers["ct_Last_training"] == True]
-    customer_ref.drop(["ct_Last_training"], axis=1, inplace=True)
-    customer_prod.drop(["ct_Last_training"], axis=1, inplace=True)
+    customer_prod = customers[customers["ct_last_training"] == False]
+    customer_ref = customers[customers["ct_last_training"] == True]
+    customer_ref.drop(["ct_last_training"], axis=1, inplace=True)
+    customer_prod.drop(["ct_last_training"], axis=1, inplace=True)
     # ================================================================================
     # 1. Prepare your column lists
     # Exclude the ones you don't want to analyze for drift

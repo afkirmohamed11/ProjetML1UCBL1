@@ -77,17 +77,17 @@ def task_tune_and_train(train_customers):
 def model_retraining(**kwargs):
 
     # fetch the data from RDS
-    customers = fetch_data_from_rds("prod_customers")
+    customers = fetch_data_from_rds()
     customers.drop_duplicates(inplace=True)
 
     customers.drop(columns=["customer_id","predictions"], inplace=True)
 
     #select the new and old customers
-    new_customers = customers[customers['ct_Last_training'] == False]
-    old_customers = customers[customers['ct_Last_training'] == True]
+    new_customers = customers[customers['ct_last_training'] == False]
+    old_customers = customers[customers['ct_last_training'] == True]
 
-    new_customers.drop(columns=["ct_Last_training"], inplace=True)
-    old_customers.drop(columns=["ct_Last_training"], inplace=True)
+    new_customers.drop(columns=["ct_last_training"], inplace=True)
+    old_customers.drop(columns=["ct_last_training"], inplace=True)
 
     #shuffle the new customers
     new_customers = new_customers.sample(frac=1, random_state=42)
@@ -103,7 +103,7 @@ def model_retraining(**kwargs):
 
     train_customers = pd.concat([old_customers[int(old_customers.shape[0]*0.7):], new_customers])
 
-    results = task_tune_and_train(new_customers)
+    results = task_tune_and_train(train_customers)
 
     kwargs['ti'].xcom_push(key='training_results', value=results)
     kwargs['ti'].xcom_push(key='eval_model_customers', value=eval_model_customers.to_dict())

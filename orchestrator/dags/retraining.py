@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.train_finetune  import  model_retraining
 from src.model_evaluation import model_evaluation
+from src.model_deployement  import deploy_model
 
 # ----add pipeline path to import it during unpickling
 pipeline_path = os.path.abspath('/opt/airflow/src/utils')  # Use absolute path
@@ -17,16 +18,6 @@ if pipeline_path not in sys.path:
     print(f"Added path to: {pipeline_path}")
 
 
-
-
-def validate_new_model(**kwargs):
-    try:
-        mlflow.set_tracking_uri("http://mlflow:5000")
-        champion_model = mlflow.sklearn.load_model("models:/churn_model@champion")
-        logging.info("model is :", champion_model)
-    except Exception as e:
-        logging.error(f"Erreur lors du chargement du modèle champion : {e}")
-        return False
     
 
 
@@ -49,4 +40,9 @@ with DAG(
         python_callable=model_evaluation
     )
 
-    task_retraining >> task_evaluation
+    task_deployment = PythonOperator(
+        task_id='model_depolyment',
+        python_callable=deploy_model
+    )
+
+    task_retraining >> task_evaluation >> task_deployment

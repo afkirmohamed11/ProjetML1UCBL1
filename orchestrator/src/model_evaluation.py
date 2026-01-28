@@ -40,16 +40,20 @@ def model_evaluation (**kwargs):
     logging.info(f"Champion Recall: {recall_champion:.4f}")
 
 
-
+    changed=False
     if recall_challenger > recall_champion:
         logging.info("The challenger model outperforms the champion model. Promoting challenger to champion.")
         #promote the challenger model to champion
         client = mlflow.tracking.MlflowClient()
         client.set_registered_model_alias("churn_model", "champion", results['model_version'])
+        changed=True
+
+        
         logging.info(f" Modèle version {results['model_version']} promu au statut CHAMPION")
     else:
         logging.info("The champion model remains the best model. No changes made.")
-    
+
+    kwargs['ti'].xcom_push(key='changed', value=changed)
 
    
 

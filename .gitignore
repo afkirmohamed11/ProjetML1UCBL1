@@ -12,3 +12,4 @@ data/
 *.csv
 reporting/workspace/
 reporting/notebook.ipynb
+notebooks/
